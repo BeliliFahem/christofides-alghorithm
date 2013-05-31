@@ -4,6 +4,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.junit.Assert;
 import org.junit.Test;
+
+import pl.wat.tal.brute.BruteForce;
 import pl.wat.tal.main.Algorithm;
 import pl.wat.tal.main.SampleAlgorithm;
 import pl.wat.tal.misc.TSPResult;
@@ -56,7 +58,8 @@ public class SolutionTest {
         graph.setEdgeWeight(e7, 520);
 
         TSPResult result = alg.findSolution("Lodz", graph);
+        BruteForce test = new BruteForce(graph);
 
-        Assert.assertEquals(solution, result.getRoute());
+        Assert.assertEquals(solution, test.countRoad("Lodz", "Berlin").getDistance());
     }
 }
