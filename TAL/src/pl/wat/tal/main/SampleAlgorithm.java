@@ -2,8 +2,7 @@ package pl.wat.tal.main;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-
-import java.util.List;
+import pl.wat.tal.misc.TSPResult;
 
 import static org.jgrapht.alg.HamiltonianCycle.getApproximateOptimalForCompleteGraph;
 
@@ -16,8 +15,11 @@ import static org.jgrapht.alg.HamiltonianCycle.getApproximateOptimalForCompleteG
  */
 public class SampleAlgorithm implements Algorithm {
 
-    public List<String> findSolution(String startVertex, SimpleWeightedGraph<String, DefaultWeightedEdge> graph) {
+    public TSPResult findSolution(String startVertex, SimpleWeightedGraph<String, DefaultWeightedEdge> graph) {
 
-        return getApproximateOptimalForCompleteGraph(graph);
+        TSPResult result = new TSPResult();
+        result.setRoute(getApproximateOptimalForCompleteGraph(graph));
+
+        return result;
     }
 }
