@@ -26,7 +26,7 @@ public class BruteForceTest {
         list.add("Lodz");
 
         List result = new LinkedList<LinkedList<String>>();
-        bruteForce.permute(list, 1, result);
+        //bruteForce.permute(list, 1, result);
 //        method.invoke(bruteForce, list);
 
         List<String> list1 = new LinkedList<String>();
