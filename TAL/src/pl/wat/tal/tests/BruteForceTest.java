@@ -1,7 +1,6 @@
 package pl.wat.tal.tests;
 
 import junit.framework.Assert;
-import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.junit.Test;
@@ -16,7 +15,7 @@ import java.util.List;
 public class BruteForceTest {
     @Test
     public void testPermute() throws Exception {
-        BruteForce bruteForce = new BruteForce(new SimpleWeightedGraph<String, DefaultEdge>(DefaultWeightedEdge.class));
+        BruteForce bruteForce = new BruteForce(new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class));
 //        Method method = BruteForce.class.getDeclaredMethod("permute", String.class);
 //        method.setAccessible(true);
         List<String> list = new LinkedList<String>();
