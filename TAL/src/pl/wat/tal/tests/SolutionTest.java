@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import pl.wat.tal.main.Algorithm;
 import pl.wat.tal.main.SampleAlgorithm;
+import pl.wat.tal.misc.TSPResult;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -54,8 +55,8 @@ public class SolutionTest {
         DefaultWeightedEdge e7 = graph.addEdge("Katowice", "Berlin");
         graph.setEdgeWeight(e7, 520);
 
-        List<String> result = alg.findSolution("Lodz", graph);
+        TSPResult result = alg.findSolution("Lodz", graph);
 
-        Assert.assertEquals(solution, result);
+        Assert.assertEquals(solution, result.getRoute());
     }
 }

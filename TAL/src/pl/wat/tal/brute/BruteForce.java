@@ -7,6 +7,8 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
 
+import pl.wat.tal.misc.TSPResult;
+
 /**
  * 
  * @author k37
@@ -19,10 +21,19 @@ public class BruteForce {
 		
 	}
 	
-	public int countRoad(WeightedGraph<String, DefaultEdge> graph, String start, String destination){
+	/**
+	 * 
+	 * @param graph graf
+	 * @param start poczatek trasy
+	 * @param destination cel trasy
+	 * @return droga + obliczona odleglosc
+	 */
+	
+	public TSPResult countRoad(WeightedGraph<String, DefaultEdge> graph, String start, String destination){
+		TSPResult result = new TSPResult();
 		LinkedList<String> route = createFirstRoute(graph, start, destination);
 		
-		return 0;
+		return result;
 	}
 	
 	/**
@@ -64,5 +75,4 @@ public class BruteForce {
 		
 		return permutations;
 	}
-
 }

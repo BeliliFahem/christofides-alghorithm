@@ -1,15 +1,16 @@
 package pl.wat.tal.misc;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Klasa pomocnicza do przechowywania wyniku dzialania algorytmow
- * @author k37
  *
+ * @author k37
  */
 
 public class TSPResult {
-	private LinkedList<String> route;
+	private List<String> route;
 	private long distance;
 	
 	public TSPResult(){
@@ -17,18 +18,18 @@ public class TSPResult {
 		distance = 0;
 	}
 	
-	public TSPResult(LinkedList<String> route, long distance){
+	public TSPResult(List<String> route, long distance){
 		this.route = route;
 		this.distance = distance;
 	}
 
-	public LinkedList<String> getRoute() {
-		return route;
-	}
+    public List<String> getRoute() {
+        return route;
+    }
 
-	public void setRoute(LinkedList<String> route) {
-		this.route = route;
-	}
+    public void setRoute(List<String> route) {
+        this.route = route;
+    }
 
 	public long getDistance() {
 		return distance;
