@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.traverse.DepthFirstIterator;
 
 import pl.wat.tal.misc.TSPResult;
@@ -17,10 +18,10 @@ import pl.wat.tal.misc.TSPResult;
  */
 
 public class BruteForce {
-	private WeightedGraph<String, DefaultEdge> graph;
+	private WeightedGraph<String, DefaultWeightedEdge> graph;
 	private long bestDistance;
 	
-	public BruteForce(WeightedGraph<String, DefaultEdge> graph){
+	public BruteForce(WeightedGraph<String, DefaultWeightedEdge> graph){
 		this.graph = graph;
 		bestDistance = 0;
 	}
@@ -37,7 +38,8 @@ public class BruteForce {
 		List<String> route = createFirstRoute(start, destination);
 		bestDistance = countDistance(route);  // pierwsza odleglosc
 		
-		List<LinkedList<String>> permutations;  // TODO znalezienie permutacji
+		List<LinkedList<String>> permutations = new LinkedList<LinkedList<String>>();  // TODO znalezienie permutacji
+		permute(route, 1, permutations);
 		
 		return result;
 	}
@@ -54,7 +56,7 @@ public class BruteForce {
 		List<String> route = new LinkedList<String>();
 		
 		route.add(start);
-		Iterator<String> i = new DepthFirstIterator<String, DefaultEdge>(graph);
+		Iterator<String> i = new DepthFirstIterator<String, DefaultWeightedEdge>(graph);
 		while(i.hasNext()){
 			String vertex = i.next();
 			if(!vertex.equals(start) && !vertex.equals(destination)){  // musi byc rozny od startu i konca
@@ -77,12 +79,14 @@ public class BruteForce {
 	 */
 	
 	private void permute(List<String> route, int index, List<LinkedList<String>> permutations){
-		//List<LinkedList<String>> permutations = new LinkedList<LinkedList<String>>();
-		
 		if(index >= route.size() - 2){  // koniec permutacji
 			permutations.add((LinkedList<String>) route);
+			System.out.println(route.toString());
 		}
 		else{
+			// puszczenie bez dalszych permutacji
+			permute(route, index+1, permutations);
+			
 			String element = route.get(index);
 			for(int i = index + 1; i < route.size() - 2; i++){
 				// zamiana elemntow na pozycjach index oraz i
