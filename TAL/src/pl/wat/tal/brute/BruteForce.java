@@ -34,7 +34,7 @@ public class BruteForce {
 	 * @return lista wierzcholkow drogi
 	 */
 	
-	private LinkedList<String> createFirstRoute(WeightedGraph<String, DefaultEdge> graph ,String start, String destination){
+	private LinkedList<String> createFirstRoute(WeightedGraph<String, DefaultEdge> graph, String start, String destination){
 		LinkedList<String> route = new LinkedList<String>();
 		
 		route.add(start);
@@ -50,6 +50,19 @@ public class BruteForce {
 		route.add(start);
 		
 		return route;
+	}
+	
+	/**
+	 * Metoda zwraca wszystkie permutacje zbioru. Zachowuje kolejnosc pierwszego i dwoch ostatnich elementow.
+	 * @author k37
+	 * @param route lista z przykladowa droga
+	 * @return lista wszystkich mozliwych drog
+	 */
+	
+	private LinkedList<LinkedList<String>> permute(LinkedList<String> route){
+		LinkedList<LinkedList<String>> permutations = new LinkedList<LinkedList<String>>();
+		
+		return permutations;
 	}
 
 }
