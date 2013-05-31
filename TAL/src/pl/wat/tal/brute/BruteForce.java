@@ -18,9 +18,11 @@ import pl.wat.tal.misc.TSPResult;
 
 public class BruteForce {
 	private WeightedGraph<String, DefaultEdge> graph;
+	private long bestDistance;
 	
 	public BruteForce(WeightedGraph<String, DefaultEdge> graph){
 		this.graph = graph;
+		bestDistance = 0;
 	}
 	
 	/**
@@ -33,6 +35,9 @@ public class BruteForce {
 	public TSPResult countRoad(String start, String destination){
 		TSPResult result = new TSPResult();
 		List<String> route = createFirstRoute(start, destination);
+		bestDistance = countDistance(route);  // pierwsza odleglosc
+		
+		List<LinkedList<String>> permutations;  // TODO znalezienie permutacji
 		
 		return result;
 	}
@@ -67,13 +72,32 @@ public class BruteForce {
 	 * Metoda zwraca wszystkie permutacje zbioru. Zachowuje kolejnosc pierwszego i dwoch ostatnich elementow.
 	 * @author k37
 	 * @param route lista z przykladowa droga
-	 * @return lista wszystkich mozliwych drog
+	 * @param index aktualny element permutacji
+	 * @param permutations lista zwrotna
 	 */
 	
-	private List<LinkedList<String>> permute(List<String> route){
-		List<LinkedList<String>> permutations = new LinkedList<LinkedList<String>>();
+	private void permute(List<String> route, int index, List<LinkedList<String>> permutations){
+		//List<LinkedList<String>> permutations = new LinkedList<LinkedList<String>>();
 		
-		return permutations;
+		if(index >= route.size() - 2){  // koniec permutacji
+			permutations.add((LinkedList<String>) route);
+		}
+		else{
+			String element = route.get(index);
+			for(int i = index + 1; i < route.size() - 2; i++){
+				// zamiana elemntow na pozycjach index oraz i
+				route.set(index, route.get(i));
+				route.set(i, element);
+				
+				// rekurencja
+				permute(route, index+1, permutations);
+				
+				// powrot do poprzedniej postaci
+				route.set(i, route.get(index));
+				route.set(index, element);
+			}
+		}
+		
 	}
 	
 	/**
