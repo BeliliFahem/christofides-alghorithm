@@ -10,14 +10,14 @@ import java.util.LinkedList;
 
 public class TSPResult {
 	private LinkedList<String> route;
-	private double distance;
+	private long distance;
 	
 	public TSPResult(){
 		route = new LinkedList<String>();
-		distance = 0.0;
+		distance = 0;
 	}
 	
-	public TSPResult(LinkedList<String> route, double distance){
+	public TSPResult(LinkedList<String> route, long distance){
 		this.route = route;
 		this.distance = distance;
 	}
@@ -30,11 +30,11 @@ public class TSPResult {
 		this.route = route;
 	}
 
-	public double getDistance() {
+	public long getDistance() {
 		return distance;
 	}
 
-	public void setDistance(double distance) {
+	public void setDistance(long distance) {
 		this.distance = distance;
 	}
 
