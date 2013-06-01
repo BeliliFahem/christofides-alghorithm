@@ -2,6 +2,7 @@ package pl.wat.tal.main;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 
 import static org.jgrapht.alg.HamiltonianCycle.getApproximateOptimalForCompleteGraph;

@@ -1,4 +1,4 @@
-package pl.wat.tal.main;
+package pl.wat.tal.common;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
