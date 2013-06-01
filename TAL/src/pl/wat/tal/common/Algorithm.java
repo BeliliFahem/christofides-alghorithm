@@ -1,6 +1,5 @@
 package pl.wat.tal.common;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import pl.wat.tal.misc.TSPResult;
 
@@ -16,5 +15,5 @@ public interface Algorithm {
      * @param graph
      * @return
      */
-    public TSPResult findSolution(String startVertex, SimpleWeightedGraph<String, DefaultWeightedEdge> graph);
+    public TSPResult findSolution(String startVertex, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph);
 }
