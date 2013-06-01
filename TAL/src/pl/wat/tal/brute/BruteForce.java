@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
 
+import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 
 /**
@@ -16,44 +18,41 @@ import pl.wat.tal.misc.TSPResult;
  *
  */
 
-public class BruteForce {
-	private WeightedGraph<String, DefaultWeightedEdge> graph;
+public class BruteForce implements Algorithm {
 	private long bestDistance;
 	private List<String> bestRoute;
-	private List<List<String>> permutations;
 	
-	public BruteForce(WeightedGraph<String, DefaultWeightedEdge> graph){
-		this.graph = graph;
+	public BruteForce(){
 		bestDistance = 0;
-		permutations = new LinkedList<List<String>>();
 	}
 	
 	/**
-	 * 
-	 * @param start poczatek trasy
-	 * @param destination cel trasy
+	 * Metoda oblicza najkrotsza rozwiazanie problemu komiwojazera algorytmem brute force
+	 * @param startVertex poczatek trasy
+	 * @param graf
 	 * @return droga + obliczona odleglosc
 	 */
 	
-	public TSPResult countRoad(String start, String destination){
+	@Override
+	public TSPResult findSolution(String startVertex,
+			SimpleWeightedGraph<String, DefaultWeightedEdge> graph) {
 		TSPResult result = new TSPResult();
-		List<String> route = createFirstRoute(start, destination);
+		List<String> route = createFirstRoute(startVertex, graph);
 		
-		if(!permutations.isEmpty())
-			permutations.clear();  // jesli wczesniej byl uzywany algorytm i lista permutacji nie jest pusta
+		List<List<String>> permutations = new LinkedList<List<String>>();  // inicjalizacja listy list dla permutacji
 		
-		permute(route, 1); // znalezienie wszystkich permutacji
+		permute(route, 1, permutations); // znalezienie wszystkich permutacji
 		
 		Iterator<List<String>> i = permutations.iterator();
 		
 		List<String> permutation = i.next();
-		bestDistance = countDistance(permutation); // pierwsza odleglosc
+		bestDistance = countDistance(permutation, graph); // pierwsza odleglosc
 		bestRoute = permutation;  // pierwsza droga
 		
 		while(i.hasNext()){
 			long distance;
 			permutation = i.next();
-			distance = countDistance(permutation);
+			distance = countDistance(permutation, graph);
 			if(bestDistance > distance){
 				bestDistance = distance;
 				bestRoute = permutation;
@@ -70,23 +69,21 @@ public class BruteForce {
 	 * Metoda tworzy pierwsza przykladowa droge
 	 * @author k37
 	 * @param start poczatek trasy
-	 * @param destination cel trasy
+	 * @param graph graf
 	 * @return lista wierzcholkow drogi
 	 */
 	
-	private List<String> createFirstRoute(String start, String destination){
+	private List<String> createFirstRoute(String start, WeightedGraph<String, DefaultWeightedEdge> graph){
 		List<String> route = new LinkedList<String>();
 		
 		route.add(start);
 		Iterator<String> i = new DepthFirstIterator<String, DefaultWeightedEdge>(graph);
 		while(i.hasNext()){
 			String vertex = i.next();
-			if(!vertex.equals(start) && !vertex.equals(destination)){  // musi byc rozny od startu i konca
+			if(!vertex.equals(start)){  // musi byc rozny od startu
 				route.add(vertex);  // dodanie kolejnego wierzcholka do drogi
 			}
 		}
-		
-		route.add(destination);
 		route.add(start);
 		
 		return route;
@@ -100,23 +97,23 @@ public class BruteForce {
 	 * @param permutations lista zwrotna
 	 */
 	
-	private void permute(List<String> route, int index){
-		if(index >= route.size() - 2){  // koniec permutacji
+	private void permute(List<String> route, int index, List<List<String>> permutations){
+		if(index >= route.size() - 1){  // koniec permutacji
 			permutations.add(new LinkedList<String>(route));  // aby dodac nowy obiekt, a nie REFERENCJE!
 			System.out.println(route.toString());  // DEBUG
 		}
 		else{
 			// puszczenie elemntu bez permutacji
-			permute(route, index+1);
+			permute(route, index+1, permutations);
 			
 			String element = route.get(index);
-			for(int i = index + 1; i < route.size() - 2; i++){
+			for(int i = index + 1; i < route.size() - 1; i++){
 				// zamiana elemntow na pozycjach index oraz i
 				route.set(index, route.get(i));
 				route.set(i, element);
 				
 				// rekurencja
-				permute(route, index+1);
+				permute(route, index+1, permutations);
 				
 				// powrot do poprzedniej postaci
 				route.set(i, route.get(index));
@@ -130,10 +127,11 @@ public class BruteForce {
 	 * Metoda obliczajaca dlugosc drogi
 	 * @author k37
 	 * @param route lista zawierajaca droge
+	 * @param graph graf
 	 * @return dlugosc drogi
 	 */
 	
-	private long countDistance(List<String> route){
+	private long countDistance(List<String> route, WeightedGraph<String, DefaultWeightedEdge> graph){
 		long result = 0;
 		String from = new String();
 		String to = new String();
