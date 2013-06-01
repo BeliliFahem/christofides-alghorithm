@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.jgrapht.WeightedGraph;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.uncommons.maths.number.NumberGenerator;
 import org.uncommons.maths.random.BinomialGenerator;
@@ -14,6 +13,8 @@ import org.uncommons.maths.random.ExponentialGenerator;
 import org.uncommons.maths.random.GaussianGenerator;
 import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.maths.random.PoissonGenerator;
+
+import pl.wat.tal.common.AdvancedWeightedEdge;
 
 /**
  * 
@@ -47,8 +48,8 @@ public class Generator {
 	 * @return graf
 	 */
 	
-	public WeightedGraph<String, DefaultWeightedEdge> generate(int vertices, boolean trueNames, int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability){
-		WeightedGraph<String, DefaultWeightedEdge> graph;
+	public WeightedGraph<String, AdvancedWeightedEdge> generate(int vertices, boolean trueNames, int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability){
+		WeightedGraph<String, AdvancedWeightedEdge> graph;
 		
 		graph = generateVerices(vertices, trueNames);  // wygenerowanie krawedzi
 		
@@ -64,8 +65,8 @@ public class Generator {
 	 * @return graf z wierzcholkami
 	 */
 	
-	private WeightedGraph<String, DefaultWeightedEdge> generateVerices(int number, boolean trueNames){
-		WeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+	private WeightedGraph<String, AdvancedWeightedEdge> generateVerices(int number, boolean trueNames){
+		WeightedGraph<String, AdvancedWeightedEdge> graph = new SimpleWeightedGraph<String, AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
 		verticesNames = new LinkedList<String>();
 		
 		if(trueNames){
@@ -93,7 +94,7 @@ public class Generator {
 	 * @param graph graf
 	 */
 	
-	private void generateEdges(int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability, WeightedGraph<String, DefaultWeightedEdge> graph){
+	private void generateEdges(int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability, WeightedGraph<String, AdvancedWeightedEdge> graph){
 		NumberGenerator<? extends Number> generator;
 		Random random = new MersenneTwisterRNG();
 		
@@ -128,7 +129,7 @@ public class Generator {
 		for(int i=0; i<verticesNames.size(); i++){
 			for(int j=i+1; j<verticesNames.size(); j++){
 				double weight = 0.0;
-				DefaultWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(j));  // dodanie krawedzi
+				AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(j));  // dodanie krawedzi
 				
 				switch (distribution) {
 				case EXPOTENTIAL:

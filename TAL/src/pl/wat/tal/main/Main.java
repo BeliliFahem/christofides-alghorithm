@@ -1,9 +1,9 @@
 package pl.wat.tal.main;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import pl.wat.tal.brute.BruteForce;
+import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.generator.Generator;
 
 public class Main {
@@ -12,28 +12,28 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-    	SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+    	SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = new SimpleWeightedGraph<String, AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
         graph.addVertex("Lodz");
         graph.addVertex("Warszawa");
         graph.addVertex("Berlin");
         graph.addVertex("Katowice");
 
-        DefaultWeightedEdge e1 = graph.addEdge("Warszawa", "Lodz");
+        AdvancedWeightedEdge e1 = graph.addEdge("Warszawa", "Lodz");
         graph.setEdgeWeight(e1, 129);
 
-        DefaultWeightedEdge e2 = graph.addEdge("Warszawa", "Katowice");
+        AdvancedWeightedEdge e2 = graph.addEdge("Warszawa", "Katowice");
         graph.setEdgeWeight(e2, 289);
 
-        DefaultWeightedEdge e3 = graph.addEdge("Warszawa", "Berlin");
+        AdvancedWeightedEdge e3 = graph.addEdge("Warszawa", "Berlin");
         graph.setEdgeWeight(e3, 575);
 
-        DefaultWeightedEdge e4 = graph.addEdge("Lodz", "Katowice");
+        AdvancedWeightedEdge e4 = graph.addEdge("Lodz", "Katowice");
         graph.setEdgeWeight(e4, 193);
 
-        DefaultWeightedEdge e5 = graph.addEdge("Lodz", "Berlin");
+        AdvancedWeightedEdge e5 = graph.addEdge("Lodz", "Berlin");
         graph.setEdgeWeight(e5, 465);
 
-        DefaultWeightedEdge e7 = graph.addEdge("Katowice", "Berlin");
+        AdvancedWeightedEdge e7 = graph.addEdge("Katowice", "Berlin");
         graph.setEdgeWeight(e7, 520);
 
         BruteForce test = new BruteForce();
@@ -41,32 +41,6 @@ public class Main {
         
         Generator gen = new Generator();
         gen.generate(10, false, 70, 100, Generator.UNIFORM, 10, 10, 10, 0.1);
-//    	SimpleWeightedGraph<String, DefaultWeightedEdge> graph = new SimpleWeightedGraph<String, DefaultWeightedEdge>(DefaultWeightedEdge.class);
-//        graph.addVertex("Lodz");
-//        graph.addVertex("Warszawa");
-//        graph.addVertex("Berlin");
-//        graph.addVertex("Katowice");
-//
-//        DefaultWeightedEdge e1 = graph.addEdge("Warszawa", "Lodz");
-//        graph.setEdgeWeight(e1, 129);
-//
-//        DefaultWeightedEdge e2 = graph.addEdge("Warszawa", "Katowice");
-//        graph.setEdgeWeight(e2, 289);
-//
-//        DefaultWeightedEdge e3 = graph.addEdge("Warszawa", "Berlin");
-//        graph.setEdgeWeight(e3, 575);
-//
-//        DefaultWeightedEdge e4 = graph.addEdge("Lodz", "Katowice");
-//        graph.setEdgeWeight(e4, 193);
-//
-//        DefaultWeightedEdge e5 = graph.addEdge("Lodz", "Berlin");
-//        graph.setEdgeWeight(e5, 465);
-//
-//        DefaultWeightedEdge e7 = graph.addEdge("Katowice", "Berlin");
-//        graph.setEdgeWeight(e7, 520);
-//
-//        BruteForce test = new BruteForce(graph);
-//        test.countRoad("Lodz", "Berlin");
 
     }
 
