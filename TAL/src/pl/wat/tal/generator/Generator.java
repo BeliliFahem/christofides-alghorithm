@@ -12,6 +12,7 @@ import org.uncommons.maths.random.BinomialGenerator;
 import org.uncommons.maths.random.DiscreteUniformGenerator;
 import org.uncommons.maths.random.ExponentialGenerator;
 import org.uncommons.maths.random.GaussianGenerator;
+import org.uncommons.maths.random.MersenneTwisterRNG;
 import org.uncommons.maths.random.PoissonGenerator;
 
 /**
@@ -38,19 +39,20 @@ public class Generator {
 	 * @param trueNames nazwy wierzcholkow pobierane z listy
 	 * @param minWeight minimalna odleglosc miedzy wierzcholkami
 	 * @param maxWeight maksymalna odleglosc miedzy wierzcholkami
-	 * @param seed
 	 * @param distribution rozklad generowanych odleglosci
 	 * @param mean
 	 * @param standardDeviation odchylenie standardowe (do rozkladu gaussa)
 	 * @param rate lambda (do rozkladu expotential)
-	 * @param probability prawdopodobienstwo otrzymania liczby (do rozkladu binominal)
+	 * @param probability prawdopodobienstwo otrzymania liczby (do rozkladu binominal, musi byc w przedziale 0 do 1)
 	 * @return graf
 	 */
 	
-	public WeightedGraph<String, DefaultWeightedEdge> generate(int vertices, boolean trueNames, int minWeight, int maxWeight, long seed, int distribution, double mean, double standardDeviation, double rate, double probability){
+	public WeightedGraph<String, DefaultWeightedEdge> generate(int vertices, boolean trueNames, int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability){
 		WeightedGraph<String, DefaultWeightedEdge> graph;
 		
-		graph = generateVerices(vertices, trueNames);
+		graph = generateVerices(vertices, trueNames);  // wygenerowanie krawedzi
+		
+		generateEdges(minWeight, maxWeight, distribution, mean, standardDeviation, rate, probability, graph);  // wygenerowanie krawedzi
 		
 		return graph;
 	}
@@ -83,17 +85,17 @@ public class Generator {
 	 * Metoda pomocnicza generujaca krawedzie wraz z ich wagami
 	 * @param minWeight minimalna odleglosc miedzy wierzcholkami
 	 * @param maxWeight maksymalna odleglosc miedzy wierzcholkami
-	 * @param seed
 	 * @param distribution rozklad generowanych odleglosci
 	 * @param mean
 	 * @param standardDeviation odchylenie standardowe (do rozkladu gaussa)
 	 * @param rate lambda (do rozkladu expotential)
-	 * @param probability prawdopodobienstwo otrzymania liczby (do rozkladu binominal)
+	 * @param probability prawdopodobienstwo otrzymania liczby (do rozkladu binominal, musi byc w przedziale 0 do 1)
+	 * @param graph graf
 	 */
 	
-	private void generateEdges(int minWeight, int maxWeight, long seed, int distribution, double mean, double standardDeviation, double rate, double probability){
-		NumberGenerator<?> generator;
-		Random random = new Random(seed);
+	private void generateEdges(int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability, WeightedGraph<String, DefaultWeightedEdge> graph){
+		NumberGenerator<? extends Number> generator;
+		Random random = new MersenneTwisterRNG();
 		
 		switch (distribution) {
 		case GAUSSIAN:
@@ -117,9 +119,40 @@ public class Generator {
 			break;
 
 		default:
-			System.out.println("Wrong number passed as distribution! Distribution = " + distribution);
+			generator = new GaussianGenerator(0.0,1.0, random);
+			System.out.println("Wrong number passed as distribution! Distribution = " + distribution);  // jesli bedzie interfejs to na JOptionPane zamienic
 			System.exit(1);
 			break;
+		}
+		
+		for(int i=0; i<verticesNames.size(); i++){
+			for(int j=i+1; j<verticesNames.size(); j++){
+				double weight = 0.0;
+				DefaultWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(j));  // dodanie krawedzi
+				
+				switch (distribution) {
+				case EXPOTENTIAL:
+					weight = Math.round(minWeight + (Double) generator.nextValue() * (maxWeight - minWeight + 1));
+					break;
+					
+				case GAUSSIAN:
+					double temp = (Double) generator.nextValue();
+					temp = Math.abs(temp);
+					weight = Math.round(minWeight + temp % (maxWeight - minWeight + 1));
+					break;
+					
+				case UNIFORM:
+					weight = (double) ((Integer) generator.nextValue());
+					break;
+
+				default:
+					weight = (double) (minWeight + (Integer) generator.nextValue() % (maxWeight - minWeight + 1));  // generowanie wagi
+					break;
+				}
+
+				System.out.println("Generated value: " + weight);  // DEBUG 
+				graph.setEdgeWeight(edge, weight);
+			}
 		}
 	}
 

@@ -4,7 +4,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 
 import pl.wat.tal.brute.BruteForce;
-import pl.wat.tal.misc.TSPResult;
+import pl.wat.tal.generator.Generator;
 
 public class Main {
 
@@ -36,8 +36,11 @@ public class Main {
         DefaultWeightedEdge e7 = graph.addEdge("Katowice", "Berlin");
         graph.setEdgeWeight(e7, 520);
 
-        BruteForce test = new BruteForce(graph);
-        test.countRoad("Lodz", "Berlin");
+        BruteForce test = new BruteForce();
+        test.findSolution("Lodz", graph);
+        
+        Generator gen = new Generator();
+        gen.generate(10, false, 70, 100, Generator.UNIFORM, 10, 10, 10, 0.1);
 
     }
 
