@@ -20,11 +20,12 @@ public class BruteForce {
 	private WeightedGraph<String, DefaultWeightedEdge> graph;
 	private long bestDistance;
 	private List<String> bestRoute;
-	private List<List<String>> permutations = new LinkedList<List<String>>();
+	private List<List<String>> permutations;
 	
 	public BruteForce(WeightedGraph<String, DefaultWeightedEdge> graph){
 		this.graph = graph;
 		bestDistance = 0;
+		permutations = new LinkedList<List<String>>();
 	}
 	
 	/**
@@ -38,6 +39,8 @@ public class BruteForce {
 		TSPResult result = new TSPResult();
 		List<String> route = createFirstRoute(start, destination);
 		
+		if(!permutations.isEmpty())
+			permutations.clear();  // jesli wczesniej byl uzywany algorytm i lista permutacji nie jest pusta
 		
 		permute(route, 1); // znalezienie wszystkich permutacji
 		
@@ -99,7 +102,7 @@ public class BruteForce {
 	
 	private void permute(List<String> route, int index){
 		if(index >= route.size() - 2){  // koniec permutacji
-			permutations.add(route);
+			permutations.add(new LinkedList<String>(route));  // aby dodac nowy obiekt, a nie REFERENCJE!
 			System.out.println(route.toString());  // DEBUG
 		}
 		else{

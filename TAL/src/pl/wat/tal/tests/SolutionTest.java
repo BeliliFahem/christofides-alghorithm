@@ -60,6 +60,6 @@ public class SolutionTest {
         TSPResult result = alg.findSolution("Lodz", graph);
         BruteForce test = new BruteForce(graph);
 
-        Assert.assertEquals(solution, test.countRoad("Lodz", "Berlin").getDistance());
+        Assert.assertEquals(solution, test.countRoad("Lodz", "Berlin").getRoute());
     }
 }
