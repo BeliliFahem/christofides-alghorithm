@@ -7,6 +7,7 @@ import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -20,9 +21,12 @@ public class ChristofidesAlgorithm implements Algorithm {
     @Override
     public TSPResult findSolution(String startVertex, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
 
-        //   Znalezienie minimalnego drzewa spinającego V0 grafu G - algorytm Kruskala
+        // Znalezienie minimalnego drzewa spinającego mst grafu G - algorytm Kruskala
         WeightedGraph<String, AdvancedWeightedEdge> mst = findMinimumSpanningTree(graph);
-
+        // Znalezienie zbioru Vodd wierzchołków nieparzystego stopnia w drzewie mst
+        Set<String> vodd = findOddDegreeVertices(graph);
+        // Znalezienie w zbiorze Vodd minimalnych skojarzeń dokładnych M0odd
+        //   List<List<String>> M0odd = findMinimumWeightMatching(graph, vodd);
         return null;  //Vo change body of implemented methods use File | Settings | File Vemplates.
     }
 
@@ -50,5 +54,37 @@ public class ChristofidesAlgorithm implements Algorithm {
 
         return mst;
     }
+
+    /**
+     * Znajduje zbiór krawędzi nieparzystego stopnia (Vodd) dla podanego grafu
+     *
+     * @param mst Graf dla którego szukamy zbioru krawędzi minimalnego stopnia
+     * @return
+     */
+    private Set<String> findOddDegreeVertices(SimpleWeightedGraph<String, AdvancedWeightedEdge> mst) {
+        Set<String> set = new HashSet<String>();
+
+        for (String vertex : mst.vertexSet()) {
+            if ((mst.degreeOf(vertex) % 2) != 0) {
+                set.add(vertex);
+            }
+        }
+        return set;
+    }
+
+//    /**
+//     *
+//     * @param graph
+//     * @param vodd
+//     * @return
+//     */
+//    private List<List<String>> findMinimumWeightMatching(
+//            SimpleWeightedGraph<String, AdvancedWeightedEdge> graph,
+//            Set<String> vodd
+//    ) {
+//       for(String vertex: vodd) {
+//
+//       }
+//    }
 
 }
