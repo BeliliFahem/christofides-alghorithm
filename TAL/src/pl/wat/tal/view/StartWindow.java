@@ -10,7 +10,7 @@ import pl.wat.tal.components.StartWindowComponents;
 public class StartWindow extends JFrame {
 
 	/**
-	 * 
+	 * @author k37
 	 */
 	private static final long serialVersionUID = -7481062030104359892L;
 	private BorderLayout layout;
@@ -23,6 +23,7 @@ public class StartWindow extends JFrame {
 		c.setLayout(layout);
 		
 		c.add(swc.getUpperPane(), BorderLayout.PAGE_START);
+		c.add(swc.getCentralPane(), BorderLayout.CENTER);
 		
 		setTitle("Projekt TAL");
 		setVisible(true);
