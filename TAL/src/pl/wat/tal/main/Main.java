@@ -5,6 +5,7 @@ import org.jgrapht.graph.SimpleWeightedGraph;
 import pl.wat.tal.brute.BruteForce;
 import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.generator.Generator;
+import pl.wat.tal.view.StartWindow;
 
 public class Main {
 
@@ -41,6 +42,8 @@ public class Main {
         
         Generator gen = new Generator();
         gen.generate(10, false, 70, 100, Generator.UNIFORM, 10, 10, 10, 0.1);
+        
+        new StartWindow();
 
     }
 
