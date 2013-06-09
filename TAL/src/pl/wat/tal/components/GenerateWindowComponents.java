@@ -1,5 +1,6 @@
 package pl.wat.tal.components;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.PlainDocument;
+
+import net.miginfocom.swing.MigLayout;
 
 import org.jgrapht.WeightedGraph;
 
@@ -54,6 +57,7 @@ public class GenerateWindowComponents implements ActionListener {
 	private JButton cancel;
 	private JPanel centralPane;
 	private JPanel bottomPane;
+	private MigLayout centralLayout;
 	private BoxLayout bottomLayout;
 	private Generator generator;
 	
@@ -67,6 +71,7 @@ public class GenerateWindowComponents implements ActionListener {
 	
 	protected void initCentralPanel(){
 		centralPane = new JPanel();
+		centralLayout = new MigLayout("fill, wrap 2", "[left]rel[grow,fill]", "[]10[fill]");
 		
 		verticesLabel = new JLabel("Liczba wierzcho³ków: ");
 		trueNamesLabel = new JLabel("Pobierz nazwy wierzcho³ków z pliku: ");
@@ -88,9 +93,28 @@ public class GenerateWindowComponents implements ActionListener {
 		trueNames = new JCheckBox();
 		distribution = new JComboBox<String>();
 		
-		// WALIDATORY
 		setValidators();
 		initComboBox();
+		
+		centralPane.setLayout(centralLayout);
+		centralPane.add(verticesLabel);
+		centralPane.add(vertices, "wrap");
+		centralPane.add(trueNamesLabel);
+		centralPane.add(trueNames, "wrap");
+		centralPane.add(minLabel);
+		centralPane.add(min, "wrap");
+		centralPane.add(maxLabel);
+		centralPane.add(max, "wrap");
+		centralPane.add(distributionLabel);
+		centralPane.add(distribution, "wrap");
+		centralPane.add(meanLabel);
+		centralPane.add(mean, "wrap");
+		centralPane.add(deviationLabel);
+		centralPane.add(deviation, "wrap");
+		centralPane.add(rateLabel);
+		centralPane.add(rate, "wrap");
+		centralPane.add(probLabel);
+		centralPane.add(prob, "wrap");
 	}
 	
 	protected void initBottomPanel(){
@@ -159,14 +183,56 @@ public class GenerateWindowComponents implements ActionListener {
 			comboBoxListener();  // wywolanie listenera comboboxu
 		} else 
 			if(source == generate){
-				WeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(Integer.parseInt(vertices.getText()), trueNames.isSelected(), Integer.parseInt(min.getText()), Integer.parseInt(max.getText()), distribution.getSelectedIndex(), Double.parseDouble(mean.getText()), Double.parseDouble(deviation.getText()), Double.parseDouble(rate.getText()), Double.parseDouble(prob.getText()));
-				swc.setGraph(graph);  // przekazanie grafu
-				operatingWindow.dispose();
+				generateListener();
 			}
 			else
 				if(source == cancel){
 					operatingWindow.dispose();  // usuniecie okna
 				}
+	}
+	
+	protected void generateListener(){
+		int verticesCount = 0;
+		int minWeight = 0;
+		int maxWeight = 0;
+		double meanValue = 0.0;
+		double deviationValue = 0.0;
+		double rateValue = 0.0;
+		double probValue = 0.0;
+		
+		// ilosc wierzcholkow i przedzial wag musza byc niepuste
+		if(!vertices.getText().isEmpty() && !min.getText().isEmpty() && !max.getText().isEmpty()){
+			verticesCount = Integer.parseInt(vertices.getText());
+			minWeight = Integer.parseInt(min.getText());
+			maxWeight = Integer.parseInt(max.getText());
+			
+			if(minWeight > maxWeight){
+				min.setBackground(Color.RED);
+				max.setBackground(Color.RED);
+			}
+			else {
+				if(!mean.getText().isEmpty())
+					meanValue = Double.parseDouble(mean.getText());
+				if(!deviation.getText().isEmpty())
+					deviationValue = Double.parseDouble(deviation.getText());
+				if(!rate.getText().isEmpty())
+					rateValue = Double.parseDouble(rate.getText());
+				if(!prob.getText().isEmpty())
+					probValue = Double.parseDouble(prob.getText());
+			
+				WeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(verticesCount, trueNames.isSelected(), minWeight, maxWeight, distribution.getSelectedIndex(), meanValue, deviationValue, rateValue, probValue);
+				swc.setGraph(graph);  // przekazanie grafu
+				operatingWindow.dispose();
+			}
+		}
+		else {
+			if(vertices.getText().isEmpty())
+				vertices.setBackground(Color.RED);
+			if(min.getText().isEmpty())
+				min.setBackground(Color.RED);
+			if(max.getText().isEmpty())
+				max.setBackground(Color.RED);
+		}
 	}
 	
 	protected void comboBoxListener(){
