@@ -28,7 +28,7 @@ public class Generator {
 	public final static int POISSON = 1;
 	public final static int BINOMIAL = 2;
 	public final static int UNIFORM = 3;
-	public final static int EXPOTENTIAL = 4;
+	public final static int EXPONENTIAL = 4;
 	
 	public Generator(){
 		
@@ -115,7 +115,7 @@ public class Generator {
 			generator = new DiscreteUniformGenerator(minWeight, maxWeight, random);
 			break;
 			
-		case EXPOTENTIAL:
+		case EXPONENTIAL:
 			generator = new ExponentialGenerator(rate, random);
 			break;
 
@@ -132,7 +132,7 @@ public class Generator {
 				AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(j));  // dodanie krawedzi
 				
 				switch (distribution) {
-				case EXPOTENTIAL:
+				case EXPONENTIAL:
 					weight = Math.round(minWeight + (Double) generator.nextValue() * (maxWeight - minWeight + 1));
 					break;
 					
