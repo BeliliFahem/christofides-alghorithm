@@ -1,13 +1,24 @@
 package pl.wat.tal.components;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.text.PlainDocument;
 
+import org.jgrapht.WeightedGraph;
+
+import pl.wat.tal.common.AdvancedWeightedEdge;
+import pl.wat.tal.generator.Generator;
 import pl.wat.tal.misc.DoubleFieldFilter;
 import pl.wat.tal.misc.IntegerFieldFilter;
 import pl.wat.tal.misc.ProbabilityFieldFilter;
@@ -18,7 +29,9 @@ import pl.wat.tal.misc.ProbabilityFieldFilter;
  *
  */
 
-public class GenerateWindowComponents {
+public class GenerateWindowComponents implements ActionListener {
+	private JFrame operatingWindow;
+	private StartWindowComponents swc;
 	private JLabel verticesLabel;
 	private JLabel trueNamesLabel;
 	private JLabel minLabel;
@@ -41,9 +54,15 @@ public class GenerateWindowComponents {
 	private JButton cancel;
 	private JPanel centralPane;
 	private JPanel bottomPane;
+	private BoxLayout bottomLayout;
+	private Generator generator;
 	
-	public GenerateWindowComponents(){
+	public GenerateWindowComponents(JFrame operatingWindow, StartWindowComponents swc){
+		generator = new Generator();
+		this.operatingWindow = operatingWindow;
+		this.swc = swc;
 		initCentralPanel();
+		initBottomPanel();
 	}
 	
 	protected void initCentralPanel(){
@@ -71,10 +90,23 @@ public class GenerateWindowComponents {
 		
 		// WALIDATORY
 		setValidators();
+		initComboBox();
 	}
 	
 	protected void initBottomPanel(){
+		bottomPane = new JPanel();
+		bottomLayout = new BoxLayout(bottomPane, BoxLayout.LINE_AXIS);
 		
+		generate = new JButton("Generuj");
+		cancel = new JButton("Anuluj");
+		generate.addActionListener(this);
+		cancel.addActionListener(this);
+		
+		bottomPane.setLayout(bottomLayout);
+		bottomPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // oddzielenie od poprzedniego panelu
+		bottomPane.add(generate);
+		bottomPane.add(Box.createHorizontalGlue());
+		bottomPane.add(cancel);
 	}
 	
 	protected void setValidators(){
@@ -99,6 +131,18 @@ public class GenerateWindowComponents {
 		doc = (PlainDocument) prob.getDocument();
 		doc.setDocumentFilter(new ProbabilityFieldFilter());
 	}
+	
+	protected void initComboBox(){
+		distribution.addItem("Rozk³ad Gaussa");
+		distribution.addItem("Rozk³ad Poissona");
+		distribution.addItem("Rozk³ad dwumianowy");
+		distribution.addItem("Rozk³ad jednostajny dyskretny");
+		distribution.addItem("Rozk³ad wyk³adniczny");
+		
+		distribution.addActionListener(this);
+		
+		distribution.setSelectedIndex(0);
+	}
 
 	public JPanel getCentralPane() {
 		return centralPane;
@@ -106,6 +150,68 @@ public class GenerateWindowComponents {
 
 	public JPanel getBottomPane() {
 		return bottomPane;
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object source = e.getSource();
+		if(source == distribution){
+			comboBoxListener();  // wywolanie listenera comboboxu
+		} else 
+			if(source == generate){
+				WeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(Integer.parseInt(vertices.getText()), trueNames.isSelected(), Integer.parseInt(min.getText()), Integer.parseInt(max.getText()), distribution.getSelectedIndex(), Double.parseDouble(mean.getText()), Double.parseDouble(deviation.getText()), Double.parseDouble(rate.getText()), Double.parseDouble(prob.getText()));
+				swc.setGraph(graph);  // przekazanie grafu
+				operatingWindow.dispose();
+			}
+			else
+				if(source == cancel){
+					operatingWindow.dispose();  // usuniecie okna
+				}
+	}
+	
+	protected void comboBoxListener(){
+		int index = distribution.getSelectedIndex();
+		
+		switch (index) {
+		case 0:
+			mean.setEditable(true);
+			deviation.setEditable(true);
+			rate.setEditable(false);
+			prob.setEditable(false);
+			break;
+			
+		case 1:
+			mean.setEditable(true);
+			deviation.setEditable(false);
+			rate.setEditable(false);
+			prob.setEditable(false);
+			break;
+			
+		case 2:
+			mean.setEditable(false);
+			deviation.setEditable(false);
+			rate.setEditable(false);
+			prob.setEditable(true);
+			break;
+			
+		case 3:
+			mean.setEditable(false);
+			deviation.setEditable(false);
+			rate.setEditable(false);
+			prob.setEditable(false);
+			break;
+			
+		case 4:
+			mean.setEditable(false);
+			deviation.setEditable(false);
+			rate.setEditable(true);
+			prob.setEditable(false);
+			break;
+
+		default:
+			System.out.println("ERROR in distribution ComboBox");
+			break;
+		}
 	}
 
 }

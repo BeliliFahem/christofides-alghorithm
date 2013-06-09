@@ -6,6 +6,7 @@ import java.awt.Container;
 import javax.swing.JFrame;
 
 import pl.wat.tal.components.GenerateWindowComponents;
+import pl.wat.tal.components.StartWindowComponents;
 
 public class GenerateWindow extends JFrame {
 
@@ -16,8 +17,8 @@ public class GenerateWindow extends JFrame {
 	private BorderLayout layout;
 	private GenerateWindowComponents gwc;
 	
-	public GenerateWindow(){
-		gwc = new GenerateWindowComponents();
+	public GenerateWindow(StartWindowComponents swc){
+		gwc = new GenerateWindowComponents(this, swc);
 		layout = new BorderLayout();
 		Container c = this.getContentPane();
 		c.setLayout(layout);

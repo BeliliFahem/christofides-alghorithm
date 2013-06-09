@@ -10,6 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import org.jgrapht.WeightedGraph;
+
+import pl.wat.tal.common.AdvancedWeightedEdge;
+import pl.wat.tal.view.GenerateWindow;
+
 /**
  * 
  * @author k37
@@ -26,6 +31,7 @@ public class StartWindowComponents implements ActionListener {
 	private JPanel centralPane;
 	private FlowLayout upperLayout;
 	private GridLayout centralLayout;
+	private WeightedGraph<String, AdvancedWeightedEdge> graph;
 	
 	public StartWindowComponents(){
 		initUpperPanel();
@@ -72,7 +78,7 @@ public class StartWindowComponents implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		JButton source = (JButton) arg0.getSource();
 		if(source == generateButton){
-			// TODO generate window
+			new GenerateWindow(this);
 		} else
 			if(source == showGraphButton){
 				// TODO show graph window
@@ -93,6 +99,16 @@ public class StartWindowComponents implements ActionListener {
 
 	public JPanel getCentralPane() {
 		return centralPane;
+	}
+
+	public void setGraph(WeightedGraph<String, AdvancedWeightedEdge> graph) {
+		this.graph = graph;
+		graphLabel.setText("Wygenerowano graf: TAK");
+		graphLabel.setForeground(Color.GREEN);
+		
+		showGraphButton.setEnabled(true);  // bo jest graf
+		bruteButton.setEnabled(true);
+		christofidesButton.setEnabled(true);
 	}
 
 }
