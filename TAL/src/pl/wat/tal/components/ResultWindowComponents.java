@@ -12,6 +12,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import pl.wat.tal.common.Algorithm;
+
 public class ResultWindowComponents implements ActionListener {
 	private JFrame operatingWindow;
 	private JTextArea results;
@@ -22,6 +24,7 @@ public class ResultWindowComponents implements ActionListener {
 	private JPanel bottomPane;
 	private BorderLayout centralLayout;
 	private GridLayout bottomLayout;
+	private Algorithm algorithm;
 	public final static int BRUTE = 0;
 	public final static int CHRISTOFIDES = 1;
 	
@@ -66,7 +69,7 @@ public class ResultWindowComponents implements ActionListener {
 	
 	public void countRoad(int algorithm){
 		results.setText(results.getText() + "\n\n" + "====================" + "\n");
-		results.setText(results.getText() + "Data: ");
+		results.setText(results.getText() + "Data: " + Calendar.DAY_OF_MONTH + "." + Calendar.MONTH + 1 + "." + Calendar.YEAR + "  " + Calendar.HOUR_OF_DAY + ":" + Calendar.MINUTE + "\n");
 	}
 
 	public JScrollPane getResultsScroller() {
