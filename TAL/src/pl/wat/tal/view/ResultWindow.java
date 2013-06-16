@@ -5,6 +5,8 @@ import java.awt.Container;
 
 import javax.swing.JFrame;
 
+import pl.wat.tal.components.ResultWindowComponents;
+
 public class ResultWindow extends JFrame {
 
 	/**
@@ -12,15 +14,16 @@ public class ResultWindow extends JFrame {
 	 */
 	private static final long serialVersionUID = 5694842464899873963L;
 	private BorderLayout layout;
+	private ResultWindowComponents rwc;
 	
 	public ResultWindow(){
-		//gwc = new GenerateWindowComponents(this, swc);
+		rwc = new ResultWindowComponents(this);
 		layout = new BorderLayout();
 		Container c = this.getContentPane();
 		c.setLayout(layout);
 		
-		//c.add(gwc.getCentralPane(), BorderLayout.CENTER);
-		//c.add(gwc.getBottomPane(), BorderLayout.PAGE_END);
+		c.add(rwc.getResultsScroller(), BorderLayout.CENTER);
+		c.add(rwc.getBottomPane(), BorderLayout.PAGE_END);
 		
 		setTitle("Projekt TAL");
 		setVisible(true);
