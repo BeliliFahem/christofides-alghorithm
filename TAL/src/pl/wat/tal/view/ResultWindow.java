@@ -5,6 +5,9 @@ import java.awt.Container;
 
 import javax.swing.JFrame;
 
+import org.jgrapht.graph.SimpleWeightedGraph;
+
+import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.components.ResultWindowComponents;
 
 public class ResultWindow extends JFrame {
@@ -15,6 +18,8 @@ public class ResultWindow extends JFrame {
 	private static final long serialVersionUID = 5694842464899873963L;
 	private BorderLayout layout;
 	private ResultWindowComponents rwc;
+	public final static int BRUTE = 0;
+	public final static int CHRISTOFIDES = 1;
 	
 	public ResultWindow(){
 		rwc = new ResultWindowComponents(this);
@@ -30,6 +35,11 @@ public class ResultWindow extends JFrame {
 	    setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 	    pack();
 	    setLocationRelativeTo(null);
+	}
+	
+	public void count(int algorithm, String startVertex, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph){
+		this.setVisible(true);
+		rwc.countRoad(algorithm, startVertex, graph);
 	}
 
 }

@@ -12,7 +12,13 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.jgrapht.graph.SimpleWeightedGraph;
+
+import pl.wat.tal.brute.BruteForce;
+import pl.wat.tal.chris.ChristofidesAlgorithm;
+import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.common.Algorithm;
+import pl.wat.tal.misc.TSPResult;
 
 public class ResultWindowComponents implements ActionListener {
 	private JFrame operatingWindow;
@@ -25,8 +31,6 @@ public class ResultWindowComponents implements ActionListener {
 	private BorderLayout centralLayout;
 	private GridLayout bottomLayout;
 	private Algorithm algorithm;
-	public final static int BRUTE = 0;
-	public final static int CHRISTOFIDES = 1;
 	
 	public ResultWindowComponents(JFrame operatingWindow){
 		this.operatingWindow = operatingWindow;
@@ -67,9 +71,25 @@ public class ResultWindowComponents implements ActionListener {
 		
 	}
 	
-	public void countRoad(int algorithm){
+	public void countRoad(int algorithm, String startVertex, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph){
 		results.setText(results.getText() + "\n\n" + "====================" + "\n");
 		results.setText(results.getText() + "Data: " + Calendar.DAY_OF_MONTH + "." + Calendar.MONTH + 1 + "." + Calendar.YEAR + "  " + Calendar.HOUR_OF_DAY + ":" + Calendar.MINUTE + "\n");
+		
+		if(algorithm == 0){
+			results.setText(results.getText() + "U¿yto algorytmu brute force \n");
+			this.algorithm = new BruteForce();
+		}
+		else
+			if(algorithm == 1){
+				results.setText(results.getText() + "U¿yto algorytmu Christofidesa \n");
+				this.algorithm = new ChristofidesAlgorithm();
+			}
+		
+		TSPResult result = this.algorithm.findSolution(startVertex, graph);
+		results.setText(results.getText() + "Wybrany wierzcho³ek pocz¹tkowy: " + startVertex + "\n");
+		results.setText(results.getText() + "Wyznaczona droga: " + result.getRoute().toString() + "\n");
+		results.setText(results.getText() + "Obliczona d³ugoœæ: " + result.getDistance() + "\n");
+		results.setText(results.getText() + "====================" + "\n");
 	}
 
 	public JScrollPane getResultsScroller() {
