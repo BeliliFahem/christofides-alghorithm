@@ -1,9 +1,9 @@
 package pl.wat.tal.brute;
 
 import org.jgrapht.WeightedGraph;
+import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
-import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 

@@ -1,5 +1,6 @@
 package pl.wat.tal.common;
 
+import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import pl.wat.tal.misc.TSPResult;
 
