@@ -3,6 +3,7 @@ package pl.wat.tal.chris;
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.KruskalMinimumSpanningTree;
 import org.jgrapht.graph.AdvancedWeightedEdge;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
 import pl.wat.tal.common.Algorithm;
@@ -29,8 +30,40 @@ public class ChristofidesAlgorithm implements Algorithm {
 //        List<List<String>> M0odd = findMinimumWeightMatching(graph, vodd);
 
         SimpleWeightedGraph<String, AdvancedWeightedEdge> minimumMatchingGraph = greedyMatch(vodd, graph);
+        DirectedWeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = combineGraphs(mst, minimumMatchingGraph);
 
         return null;  //Vo change body of implemented methods use File | Settings | File Vemplates.
+    }
+
+    /**
+     * Łączy ze sobą dwa grafy, z czego lista wierzchołków pochodzi tylko z pierwszego
+     *
+     * @param graph1
+     * @param graph2
+     * @return
+     */
+    private DirectedWeightedMultigraph<String, AdvancedWeightedEdge> combineGraphs(
+            WeightedGraph<String, AdvancedWeightedEdge> graph1,
+            WeightedGraph<String, AdvancedWeightedEdge> graph2
+    ) {
+        // Tworzymy nowy graf
+        DirectedWeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = new DirectedWeightedMultigraph<String,
+                AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
+        // kopiujemy wszystkie wierzcholki z pierwszego
+        for (String vertex : graph1.vertexSet()) {
+            combinedGraph.addVertex(vertex);
+        }
+        // oraz wszystkie krawedzie
+        for (AdvancedWeightedEdge edge : graph1.edgeSet()) {
+            combinedGraph.addEdge((String) edge.getSourceVertex(), (String) edge.getTargetVertex(), edge);
+        }
+        // A teraz wszystkie krawedzie z drugiego grafu (mogą się powtarzać)
+        for (AdvancedWeightedEdge edge : graph2.edgeSet()) {
+            combinedGraph.addEdge((String) edge.getSourceVertex(), (String) edge.getTargetVertex(), edge);
+        }
+
+        // Zwracamy polaczony graf
+        return combinedGraph;
     }
 
     /**
@@ -259,7 +292,11 @@ public class ChristofidesAlgorithm implements Algorithm {
         }
 
         for (AdvancedWeightedEdge edge : matches) {
-            returnGraph.addEdge((String) edge.getSourceVertex(), (String) edge.getTargetVertex(), edge);
+            // Tworzymy nowe obiekty krawedzi, gdyz inaczej jgrapht moze myslec ze dwa razy dodalismy taką samą
+            // krawędź
+            AdvancedWeightedEdge newEdge = new AdvancedWeightedEdge();
+            newEdge.setWeight(edge.getWeight());
+            returnGraph.addEdge((String) edge.getSourceVertex(), (String) edge.getTargetVertex(), newEdge);
         }
 
         return returnGraph;
