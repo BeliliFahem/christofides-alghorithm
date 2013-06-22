@@ -1,11 +1,13 @@
 package pl.wat.tal.chris;
 
 import org.jgrapht.WeightedGraph;
+import org.jgrapht.alg.EulerianCircuit;
 import org.jgrapht.alg.KruskalMinimumSpanningTree;
 import org.jgrapht.graph.AdvancedWeightedEdge;
-import org.jgrapht.graph.DirectedWeightedMultigraph;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.jgrapht.traverse.DepthFirstIterator;
+import pl.wat.tal.common.AbstractAlgorithm;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 
@@ -17,7 +19,7 @@ import java.util.*;
  * @author Ignacy Sawicki <igesef@gmail.com>
  * @version 1.0 01.06.13
  */
-public class ChristofidesAlgorithm implements Algorithm {
+public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorithm {
 
     @Override
     public TSPResult findSolution(String startVertex, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
@@ -30,9 +32,57 @@ public class ChristofidesAlgorithm implements Algorithm {
 //        List<List<String>> M0odd = findMinimumWeightMatching(graph, vodd);
 
         SimpleWeightedGraph<String, AdvancedWeightedEdge> minimumMatchingGraph = greedyMatch(vodd, graph);
-        DirectedWeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = combineGraphs(mst, minimumMatchingGraph);
+        WeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = combineGraphs(mst, minimumMatchingGraph);
+        List<String> eulerianCycle = findEulerianCycle(combinedGraph);
+        List<String> tspSolution = findHamiltonianCycle(eulerianCycle, graph, startVertex);
 
-        return null;  //Vo change body of implemented methods use File | Settings | File Vemplates.
+        TSPResult tspResult = new TSPResult();
+        tspResult.setRoute(tspSolution);
+        tspResult.setDistance(countDistance(tspSolution, graph));
+
+        return tspResult;
+    }
+
+    /**
+     * Znajduje cykl hamiltona
+     *
+     * @param eulerianCycle
+     * @param graph
+     * @param startVertex
+     * @return
+     */
+    private List<String> findHamiltonianCycle(List<String> eulerianCycle, SimpleWeightedGraph<String,
+            AdvancedWeightedEdge> graph, String startVertex) {
+
+        // Usuwamy ostatni wierzcholek z cyklu eulera, i tak dlugo jak pierwszym wierzcholkiem cyklu nie bedzie nasz
+        // wierzcholek startowy, przestawiamy kolejnosc wierzcholkow
+
+        eulerianCycle.remove(eulerianCycle.size() - 1);
+        Iterator<String> iterator = eulerianCycle.iterator();
+        while (iterator.hasNext()) {
+            String current = iterator.next();
+            if (current.equals(startVertex)) {
+                break;
+            } else {
+                eulerianCycle.remove(current);
+                eulerianCycle.add(current);
+            }
+        }
+
+        List<String> tspSolution = new LinkedList<String>();
+        // Przechodzimy po wszystkich wierzcholkach z cyklu eulera
+        for (String vertex : eulerianCycle) {
+            // jeśli jakis wierzcholek jest juz na liscie przejrzanych, omijamy go i idziemy do nastepnego
+            if (!tspSolution.contains(vertex)) {
+                // a jak go nie ma, to dodajemy go do listy przejrzanych
+                tspSolution.add(vertex);
+            }
+        }
+
+        // dodajemy jeszcze nasz poczatkowy wierzcholek na koniec
+        tspSolution.add(startVertex);
+
+        return tspSolution;
     }
 
     /**
@@ -42,12 +92,12 @@ public class ChristofidesAlgorithm implements Algorithm {
      * @param graph2
      * @return
      */
-    private DirectedWeightedMultigraph<String, AdvancedWeightedEdge> combineGraphs(
+    private WeightedMultigraph<String, AdvancedWeightedEdge> combineGraphs(
             WeightedGraph<String, AdvancedWeightedEdge> graph1,
             WeightedGraph<String, AdvancedWeightedEdge> graph2
     ) {
         // Tworzymy nowy graf
-        DirectedWeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = new DirectedWeightedMultigraph<String,
+        WeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = new WeightedMultigraph<String,
                 AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
         // kopiujemy wszystkie wierzcholki z pierwszego
         for (String vertex : graph1.vertexSet()) {
@@ -130,6 +180,19 @@ public class ChristofidesAlgorithm implements Algorithm {
                 ojej++;
             }
         }
+
+        return list;
+    }
+
+    /**
+     * Znajdowanie cyklu eulera
+     *
+     * @param graph
+     * @return
+     */
+    private List<String> findEulerianCycle(WeightedMultigraph<String, AdvancedWeightedEdge> graph) {
+
+        List<String> list = EulerianCircuit.getEulerianCircuitVertices(graph);
 
         return list;
     }

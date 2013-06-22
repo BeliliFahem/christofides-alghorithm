@@ -4,6 +4,7 @@ import org.jgrapht.WeightedGraph;
 import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.traverse.DepthFirstIterator;
+import pl.wat.tal.common.AbstractAlgorithm;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @author k37
  */
 
-public class BruteForce implements Algorithm {
+public class BruteForce extends AbstractAlgorithm implements Algorithm {
     private long bestDistance;
     private List<String> bestRoute;
 
@@ -120,33 +121,5 @@ public class BruteForce implements Algorithm {
             }
         }
 
-    }
-
-    /**
-     * Metoda obliczajaca dlugosc drogi
-     *
-     * @param route lista zawierajaca droge
-     * @param graph graf
-     * @return dlugosc drogi
-     * @author k37
-     */
-
-    private long countDistance(List<String> route, WeightedGraph<String, AdvancedWeightedEdge> graph) {
-        long result = 0;
-        String from = new String();
-        String to = new String();
-
-        Iterator<String> i = route.iterator();
-        from = i.next();  // pierwszy wierzcholek
-        to = i.next();  // pierwsze odwiedzane miasto
-
-        while (i.hasNext()) {
-            result = (long) (result + graph.getEdgeWeight(graph.getEdge(from, to)));  // dodanie wagi obecnej krawedzi
-            from = to;  // zamiana koncowego na poczatkowy
-            to = i.next();  // pobranie kolejnego wierzcholka
-        }
-
-        result = (long) (result + graph.getEdgeWeight(graph.getEdge(from, to)));  // ostatni wierzcholek poza petla
-        return result;
     }
 }
