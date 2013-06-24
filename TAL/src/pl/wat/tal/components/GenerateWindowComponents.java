@@ -59,15 +59,15 @@ public class GenerateWindowComponents implements ActionListener {
         centralPane = new JPanel();
         centralLayout = new MigLayout("fill, wrap 2", "[left]rel[grow,fill]", "[]10[fill]");
 
-        verticesLabel = new JLabel("Liczba wierzcho�k�w: ");
-        trueNamesLabel = new JLabel("Pobierz nazwy wierzcho�k�w z pliku: ");
-        minLabel = new JLabel("Minimalna waga kraw�dzi: ");
-        maxLabel = new JLabel("Maksymalna waga kraw�dzi: ");
-        distributionLabel = new JLabel("Rozk�ad generowanych wag kraw�dzi: ");
-        meanLabel = new JLabel("Warto�� oczekiwana: ");
+        verticesLabel = new JLabel("Liczba wierzchołków: ");
+        trueNamesLabel = new JLabel("Pobierz nazwy wierzchołków z pliku: ");
+        minLabel = new JLabel("Minimalna waga krawędzi: ");
+        maxLabel = new JLabel("Maksymalna waga krawędzi: ");
+        distributionLabel = new JLabel("Rozkład generowanych wag krawędzi: ");
+        meanLabel = new JLabel("Wartość oczekiwana: ");
         deviationLabel = new JLabel("Odchylenie standardowe: ");
         rateLabel = new JLabel("Wsp�czynnik lambda: ");
-        probLabel = new JLabel("Prawdopodobie�stwo zaj�cia zdarzenia: ");
+        probLabel = new JLabel("Prawdopodobieństwo zajścia zdarzenia: ");
 
         vertices = new JTextField();
         min = new JTextField();
@@ -78,6 +78,8 @@ public class GenerateWindowComponents implements ActionListener {
         prob = new JTextField();
         trueNames = new JCheckBox();
         distribution = new JComboBox<String>();
+        
+        trueNames.setEnabled(false);  // TODO
 
         setValidators();
         initComboBox();
@@ -143,11 +145,11 @@ public class GenerateWindowComponents implements ActionListener {
     }
 
     protected void initComboBox() {
-        distribution.addItem("Rozk�ad Gaussa");
-        distribution.addItem("Rozk�ad Poissona");
-        distribution.addItem("Rozk�ad dwumianowy");
-        distribution.addItem("Rozk�ad jednostajny dyskretny");
-        distribution.addItem("Rozk�ad wyk�adniczny");
+        distribution.addItem("Rozkład Gaussa");
+        distribution.addItem("Rozkład Poissona");
+        distribution.addItem("Rozkład dwumianowy");
+        distribution.addItem("Rozkład jednostajny dyskretny");
+        distribution.addItem("Rozkład wykładniczny");
 
         distribution.addActionListener(this);
 

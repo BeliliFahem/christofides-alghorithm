@@ -28,7 +28,7 @@ public class VertexWindowComponents implements ActionListener {
     }
 
     protected void init() {
-        titleLabel = new JLabel("Wybierz wierzcho�ek pocz�tkowy");
+        titleLabel = new JLabel("Wybierz wierzchołek początkowy");
 
         vertices = new JComboBox<String>();
         Set<String> set = graph.vertexSet();

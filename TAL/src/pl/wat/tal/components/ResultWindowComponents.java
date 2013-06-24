@@ -75,18 +75,18 @@ public class ResultWindowComponents implements ActionListener {
         resultsConsole.setText(resultsConsole.getText() + "Data: " + Calendar.DAY_OF_MONTH + "." + Calendar.MONTH + 1 + "." + Calendar.YEAR + "  " + Calendar.HOUR_OF_DAY + ":" + Calendar.MINUTE + "\n");
 
         if (algorithm == 0) {
-            resultsConsole.setText(resultsConsole.getText() + "U�yto algorytmu brute force \n");
+            resultsConsole.setText(resultsConsole.getText() + "Użyto algorytmu brute force \n");
             this.algorithm = new BruteForce();
         } else if (algorithm == 1) {
-            resultsConsole.setText(resultsConsole.getText() + "U�yto algorytmu Christofidesa \n");
+            resultsConsole.setText(resultsConsole.getText() + "Użyto algorytmu Christofidesa \n");
             this.algorithm = new ChristofidesAlgorithm();
         }
 
         TSPResult result = this.algorithm.findSolution(startVertex, graph);
         results.add(result);  // dodanie do listy poprzednich wynikow
-        resultsConsole.setText(resultsConsole.getText() + "Wybrany wierzcho�ek pocz�tkowy: " + startVertex + "\n");
+        resultsConsole.setText(resultsConsole.getText() + "Wybrany wierzchołek początkowy: " + startVertex + "\n");
         resultsConsole.setText(resultsConsole.getText() + "Wyznaczona droga: " + result.getRoute().toString() + "\n");
-        resultsConsole.setText(resultsConsole.getText() + "Obliczona d�ugo��: " + result.getDistance() + "\n");
+        resultsConsole.setText(resultsConsole.getText() + "Obliczona długość: " + result.getDistance() + "\n");
         resultsConsole.setText(resultsConsole.getText() + "====================" + "\n");
     }
 
