@@ -58,16 +58,22 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
         // wierzcholek startowy, przestawiamy kolejnosc wierzcholkow
 
         eulerianCycle.remove(eulerianCycle.size() - 1);
-        Iterator<String> iterator = eulerianCycle.iterator();
-        while (iterator.hasNext()) {
-            String current = iterator.next();
-            if (current.equals(startVertex)) {
-                break;
-            } else {
-                eulerianCycle.remove(current);
-                eulerianCycle.add(current);
-            }
+        List<String> eulerianCycleCopy = new LinkedList<String>(eulerianCycle);
+        Iterator<String> iterator = eulerianCycleCopy.iterator();
+        while (!eulerianCycle.get(0).equals(startVertex)) {
+            String current = eulerianCycle.get(0);
+            eulerianCycle.remove(current);
+            eulerianCycle.add(current);
         }
+//        while (iterator.hasNext()) {
+//            String current = iterator.next();
+//            if (current.equals(startVertex)) {
+//                break;
+//            } else {
+//                eulerianCycle.remove(current);
+//                eulerianCycle.add(current);
+//            }
+//        }
 
         List<String> tspSolution = new LinkedList<String>();
         // Przechodzimy po wszystkich wierzcholkach z cyklu eulera
@@ -226,7 +232,7 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
 
                 for (String vertexOfEdge : verticesOfEdge) {
 
-                    if (!vertices.contains(vertexOfEdge)) {
+                    if (!voddVertices.contains(vertexOfEdge)) {
                         // zapisujemy do wywalenia
                         if (trash.get(vertexOfEdge) == null) {
                             trash.put(vertexOfEdge, new LinkedList<AdvancedWeightedEdge>());
@@ -251,14 +257,30 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
             String key = (String) (pair.getKey());
             LinkedList<AdvancedWeightedEdge> edgeList = (LinkedList<AdvancedWeightedEdge>) (pair.getValue());
 
-            if (!vertices.contains(key)) {
-                vertices.remove(key);
+            List<AdvancedWeightedEdge> toRemove = new LinkedList<AdvancedWeightedEdge>();
+
+            if (!voddVertices.contains(key)) {
+                // Usuwamy wierzcholek
+                voddVertices.remove(key);
+                // I wszystkie z nim krawedzie
+                for (AdvancedWeightedEdge e : edgeList) {
+                    if (e.getSourceVertex().equals(key) || e.getTargetVertex().equals(key)) {
+                        toRemove.add(e);
+                    }
+                }
             } else {
                 for (AdvancedWeightedEdge e : edgeList) {
-                    edges.remove(e);
+                    if (e.getSourceVertex().equals(key) || e.getTargetVertex().equals(key)) {
+                        toRemove.add(e);
+                    }
                 }
             }
+
+            for (AdvancedWeightedEdge edge : toRemove) {
+                edgeList.remove(edge);
+            }
         }
+
 
         // tak dlugo, jak mamy mniej krawedzi od spodziewanej liczby dopasowan
         while (matches.size() < numberOfMatches) {
@@ -292,7 +314,7 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
                     verticesOfEdge.add((String) e.getTargetVertex());
 
                     for (String vertexOfEdge : verticesOfEdge) {
-                        if (!vertices.contains(vertexOfEdge)) {
+                        if (!voddVertices.contains(vertexOfEdge)) {
                             continue outer;
                         }
                     }
