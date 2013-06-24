@@ -38,8 +38,13 @@ public class ResultWindow extends JFrame {
 	}
 	
 	public void count(int algorithm, String startVertex, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph){
-		this.setVisible(true);
 		rwc.countRoad(algorithm, startVertex, graph);
+	}
+	
+	public void selectVertex(int algorithm, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph){
+		this.setVisible(true);
+		this.setEnabled(false);
+		rwc.selectVertex(algorithm, graph);
 	}
 
 }

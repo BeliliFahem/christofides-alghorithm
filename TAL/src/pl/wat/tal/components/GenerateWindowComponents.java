@@ -18,7 +18,7 @@ import javax.swing.text.PlainDocument;
 
 import net.miginfocom.swing.MigLayout;
 
-import org.jgrapht.WeightedGraph;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
 import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.generator.Generator;
@@ -220,7 +220,7 @@ public class GenerateWindowComponents implements ActionListener {
 				if(!prob.getText().isEmpty())
 					probValue = Double.parseDouble(prob.getText());
 			
-				WeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(verticesCount, trueNames.isSelected(), minWeight, maxWeight, distribution.getSelectedIndex(), meanValue, deviationValue, rateValue, probValue);
+				SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(verticesCount, trueNames.isSelected(), minWeight, maxWeight, distribution.getSelectedIndex(), meanValue, deviationValue, rateValue, probValue);
 				swc.setGraph(graph);  // przekazanie grafu
 				operatingWindow.dispose();
 			}

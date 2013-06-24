@@ -10,10 +10,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import org.jgrapht.WeightedGraph;
+import org.jgrapht.graph.SimpleWeightedGraph;
 
 import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.view.GenerateWindow;
+import pl.wat.tal.view.ResultWindow;
 
 /**
  * 
@@ -31,7 +32,8 @@ public class StartWindowComponents implements ActionListener {
 	private JPanel centralPane;
 	private FlowLayout upperLayout;
 	private GridLayout centralLayout;
-	private WeightedGraph<String, AdvancedWeightedEdge> graph;
+	private SimpleWeightedGraph<String, AdvancedWeightedEdge> graph;
+	private ResultWindow results;
 	
 	public StartWindowComponents(){
 		initUpperPanel();
@@ -85,11 +87,17 @@ public class StartWindowComponents implements ActionListener {
 			}
 			else
 				if(source == bruteButton){
-					// TODO show brute window
+					if(results == null){
+						results = new ResultWindow();
+					} 
+					results.selectVertex(ResultWindow.BRUTE, graph);
 				}
 				else
 					if(source == christofidesButton){
-						// TODO show christofides window
+						if(results == null){
+							results = new ResultWindow();
+						} 
+						results.selectVertex(ResultWindow.CHRISTOFIDES, graph);
 					}
 	}
 
@@ -101,7 +109,7 @@ public class StartWindowComponents implements ActionListener {
 		return centralPane;
 	}
 
-	public void setGraph(WeightedGraph<String, AdvancedWeightedEdge> graph) {
+	public void setGraph(SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
 		this.graph = graph;
 		graphLabel.setText("Wygenerowano graf: TAK");
 		graphLabel.setForeground(Color.GREEN);
