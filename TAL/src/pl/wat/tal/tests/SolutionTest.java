@@ -1,10 +1,10 @@
 package pl.wat.tal.tests;
 
+import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.junit.Assert;
 import org.junit.Test;
 import pl.wat.tal.chris.ChristofidesAlgorithm;
-import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
 
@@ -54,7 +54,8 @@ public class SolutionTest {
         AdvancedWeightedEdge e7 = graph.addEdge("Katowice", "Berlin");
         graph.setEdgeWeight(e7, 520);
 
-        //BruteForce alg = new BruteForce(graph);
+        //Algorithm alg = new BruteForce();
+
 
         Algorithm alg = new ChristofidesAlgorithm();
         TSPResult test = alg.findSolution("Lodz", graph);

@@ -1,9 +1,8 @@
 package pl.wat.tal.main;
 
+import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-
 import pl.wat.tal.brute.BruteForce;
-import pl.wat.tal.common.AdvancedWeightedEdge;
 import pl.wat.tal.generator.Generator;
 import pl.wat.tal.view.StartWindow;
 
@@ -13,7 +12,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
-    	SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = new SimpleWeightedGraph<String, AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
+        SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = new SimpleWeightedGraph<String, AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
         graph.addVertex("Lodz");
         graph.addVertex("Warszawa");
         graph.addVertex("Berlin");
@@ -39,10 +38,10 @@ public class Main {
 
         BruteForce test = new BruteForce();
         test.findSolution("Lodz", graph);
-        
+
         Generator gen = new Generator();
         gen.generate(10, false, 70, 100, Generator.UNIFORM, 10, 10, 10, 0.1);
-        
+
         new StartWindow();
 
     }
