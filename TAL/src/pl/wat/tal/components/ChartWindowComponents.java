@@ -94,7 +94,9 @@ public class ChartWindowComponents {
                 PlotOrientation.VERTICAL, true, true, false);
         chrisChart = ChartFactory.createXYLineChart("Algorytm Christofidesa", "Rozmiar problemu", yTitle, chrisSet,
                 PlotOrientation.VERTICAL, true, true, false);
-        chrisChart.getXYPlot().getRangeAxis().setRange(0.9, 1.5);
+        if (option == ChartWindow.QUALITY) {
+            chrisChart.getXYPlot().getRangeAxis().setRange(0.9, 1.5);
+        }
         brutePane = new ChartPanel(bruteChart);
         chrisPane = new ChartPanel(chrisChart);
     }

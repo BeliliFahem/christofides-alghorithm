@@ -23,6 +23,8 @@ public class GenerateWindowComponents implements ActionListener {
     private StartWindowComponents swc;
     private JLabel verticesLabel;
     private JLabel trueNamesLabel;
+    private JLabel knownLengthLabel;
+    private JLabel knownLengthNumberLabel;
     private JLabel minLabel;
     private JLabel maxLabel;
     private JLabel distributionLabel;
@@ -37,7 +39,9 @@ public class GenerateWindowComponents implements ActionListener {
     private JTextField deviation;
     private JTextField rate;
     private JTextField prob;
+    private JTextField knownLengthNumber;
     private JCheckBox trueNames;
+    private JCheckBox knownLength;
     private JComboBox<String> distribution;
     private JButton generate;
     private JButton cancel;
@@ -66,20 +70,28 @@ public class GenerateWindowComponents implements ActionListener {
         distributionLabel = new JLabel("Rozkład generowanych wag krawędzi: ");
         meanLabel = new JLabel("Wartość oczekiwana: ");
         deviationLabel = new JLabel("Odchylenie standardowe: ");
-        rateLabel = new JLabel("Wsp�czynnik lambda: ");
+        rateLabel = new JLabel("Współczynnik lambda: ");
         probLabel = new JLabel("Prawdopodobieństwo zajścia zdarzenia: ");
+        knownLengthNumberLabel = new JLabel("Minimalna długość drogi");
+        knownLengthLabel = new JLabel("Czy wygenerować graf dla znanej minimalnej długości drogi?");
 
         vertices = new JTextField();
         min = new JTextField();
+        knownLengthNumber = new JTextField();
+        knownLengthNumber.setEnabled(false);
+        knownLengthNumber.setEditable(false);
+
         max = new JTextField();
         mean = new JTextField();
         deviation = new JTextField();
         rate = new JTextField();
         prob = new JTextField();
         trueNames = new JCheckBox();
+        knownLength = new JCheckBox();
         distribution = new JComboBox<String>();
-        
+
         trueNames.setEnabled(false);  // TODO
+        knownLength.addActionListener(this);
 
         setValidators();
         initComboBox();
@@ -89,6 +101,10 @@ public class GenerateWindowComponents implements ActionListener {
         centralPane.add(vertices, "wrap");
         centralPane.add(trueNamesLabel);
         centralPane.add(trueNames, "wrap");
+        centralPane.add(knownLengthLabel);
+        centralPane.add(knownLength, "wrap");
+        centralPane.add(knownLengthNumberLabel);
+        centralPane.add(knownLengthNumber, "wrap");
         centralPane.add(minLabel);
         centralPane.add(min, "wrap");
         centralPane.add(maxLabel);
@@ -129,6 +145,9 @@ public class GenerateWindowComponents implements ActionListener {
         doc.setDocumentFilter(new IntegerFieldFilter());
 
         doc = (PlainDocument) max.getDocument();
+        doc.setDocumentFilter(new IntegerFieldFilter());
+
+        doc = (PlainDocument) knownLengthNumber.getDocument();
         doc.setDocumentFilter(new IntegerFieldFilter());
 
         doc = (PlainDocument) mean.getDocument();
@@ -173,48 +192,101 @@ public class GenerateWindowComponents implements ActionListener {
             generateListener();
         } else if (source == cancel) {
             operatingWindow.dispose();  // usuniecie okna
+        } else if (source == knownLength) {
+            if (knownLength.isSelected()) {
+                min.setEditable(false);
+                min.setEnabled(false);
+                max.setEditable(false);
+                max.setEnabled(false);
+                mean.setEditable(false);
+                mean.setEnabled(false);
+                deviation.setEditable(false);
+                deviation.setEnabled(false);
+                rate.setEditable(false);
+                rate.setEnabled(false);
+                prob.setEditable(false);
+                prob.setEnabled(false);
+                distribution.setEditable(false);
+                distribution.setEnabled(false);
+                knownLengthNumber.setEditable(true);
+                knownLengthNumber.setEnabled(true);
+            } else {
+                min.setEditable(true);
+                min.setEnabled(true);
+                max.setEditable(true);
+                max.setEnabled(true);
+                mean.setEditable(true);
+                mean.setEnabled(true);
+                deviation.setEditable(true);
+                deviation.setEnabled(true);
+                rate.setEditable(true);
+                rate.setEnabled(true);
+                prob.setEditable(true);
+                prob.setEnabled(true);
+                distribution.setEditable(true);
+                distribution.setEnabled(true);
+                knownLengthNumber.setEditable(false);
+                knownLengthNumber.setEnabled(false);
+            }
         }
+
     }
 
     protected void generateListener() {
         int verticesCount = 0;
+        int lenght = 0;
         int minWeight = 0;
         int maxWeight = 0;
         double meanValue = 0.0;
         double deviationValue = 0.0;
         double rateValue = 0.0;
         double probValue = 0.0;
+        if (!knownLength.isSelected()) {
+            // ilosc wierzcholkow i przedzial wag musza byc niepuste
+            if (!vertices.getText().isEmpty() && !min.getText().isEmpty() && !max.getText().isEmpty()) {
+                verticesCount = Integer.parseInt(vertices.getText());
+                minWeight = Integer.parseInt(min.getText());
+                maxWeight = Integer.parseInt(max.getText());
 
-        // ilosc wierzcholkow i przedzial wag musza byc niepuste
-        if (!vertices.getText().isEmpty() && !min.getText().isEmpty() && !max.getText().isEmpty()) {
-            verticesCount = Integer.parseInt(vertices.getText());
-            minWeight = Integer.parseInt(min.getText());
-            maxWeight = Integer.parseInt(max.getText());
+                if (minWeight > maxWeight) {
+                    min.setBackground(Color.RED);
+                    max.setBackground(Color.RED);
+                } else {
+                    if (!mean.getText().isEmpty())
+                        meanValue = Double.parseDouble(mean.getText());
+                    if (!deviation.getText().isEmpty())
+                        deviationValue = Double.parseDouble(deviation.getText());
+                    if (!rate.getText().isEmpty())
+                        rateValue = Double.parseDouble(rate.getText());
+                    if (!prob.getText().isEmpty())
+                        probValue = Double.parseDouble(prob.getText());
 
-            if (minWeight > maxWeight) {
-                min.setBackground(Color.RED);
-                max.setBackground(Color.RED);
+                    SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(verticesCount, trueNames.isSelected(), minWeight, maxWeight, distribution.getSelectedIndex(), meanValue, deviationValue, rateValue, probValue);
+                    swc.setGraph(graph);  // przekazanie grafu
+                    operatingWindow.dispose();
+                }
             } else {
-                if (!mean.getText().isEmpty())
-                    meanValue = Double.parseDouble(mean.getText());
-                if (!deviation.getText().isEmpty())
-                    deviationValue = Double.parseDouble(deviation.getText());
-                if (!rate.getText().isEmpty())
-                    rateValue = Double.parseDouble(rate.getText());
-                if (!prob.getText().isEmpty())
-                    probValue = Double.parseDouble(prob.getText());
-
-                SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(verticesCount, trueNames.isSelected(), minWeight, maxWeight, distribution.getSelectedIndex(), meanValue, deviationValue, rateValue, probValue);
-                swc.setGraph(graph);  // przekazanie grafu
-                operatingWindow.dispose();
+                if (vertices.getText().isEmpty())
+                    vertices.setBackground(Color.RED);
+                if (min.getText().isEmpty())
+                    min.setBackground(Color.RED);
+                if (max.getText().isEmpty())
+                    max.setBackground(Color.RED);
             }
         } else {
-            if (vertices.getText().isEmpty())
-                vertices.setBackground(Color.RED);
-            if (min.getText().isEmpty())
-                min.setBackground(Color.RED);
-            if (max.getText().isEmpty())
-                max.setBackground(Color.RED);
+            if (!vertices.getText().isEmpty() && !knownLengthNumber.getText().isEmpty()) {
+                verticesCount = Integer.parseInt(vertices.getText());
+                lenght = Integer.parseInt(knownLengthNumber.getText());
+                SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generateForKnownLength(verticesCount, lenght);
+                swc.setGraph(graph);  // przekazanie grafu
+                operatingWindow.dispose();
+
+            } else {
+                if (knownLengthNumber.getText().isEmpty())
+                    knownLengthNumber.setBackground(Color.RED);
+                if (vertices.getText().isEmpty())
+                    vertices.setBackground(Color.RED);
+            }
         }
     }
 

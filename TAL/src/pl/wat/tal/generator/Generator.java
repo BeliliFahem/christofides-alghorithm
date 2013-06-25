@@ -50,6 +50,15 @@ public class Generator {
         return graph;
     }
 
+    public SimpleWeightedGraph<String, AdvancedWeightedEdge> generateForKnownLength(int vertices, int length) {
+        SimpleWeightedGraph<String, AdvancedWeightedEdge> graph;
+
+        graph = generateVerices(vertices, false);  // wygenerowanie krawedzi
+        generateEdgesForMinimalRoute(length, graph);
+
+        return graph;
+    }
+
     /**
      * Metoda pomocnicza generujaca wierzcholki w grafie
      *
@@ -74,22 +83,37 @@ public class Generator {
         return graph;
     }
 
-//    private void generateEdgesForMinimalRoute(int route, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
-//        // Minimalna trasa to trasa v1, v2, v3 .... . Suma tych krawędzi równa jest route
-//        int currentRoute = route;
-//        NumberGenerator<? extends Number> generator;
-//        Random random = new Random();
-//
-//        generator = new PoissonGenerator(route/verticesNames.size(), random);
-//
-//        int part = 0;
-//        while(part > verticesNames.size()) {
-//
-//            generated = Math.round((Double) generator.nextValue() * (maxWeight - minWeight + 1));
-//        }
-//        int routeComponent = (double) verticesNames.size() / route;
-//        // tworzymy krawędzie pomiędzy minimalną trasą
-//    }
+    private void generateEdgesForMinimalRoute(int route, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
+        // Minimalna trasa to trasa v1, v2, v3 .... . Suma tych krawędzi równa jest route
+        NumberGenerator<? extends Number> generator;
+        Random random = new Random();
+        int n = verticesNames.size();
+        int routeComponent = route / n;
+
+        int generatedRoute = 0;
+        for (int i = 0; i < n - 1; i++) {
+            AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(i + 1));  // dodanie
+            edge.setWeight(routeComponent);
+            generatedRoute += routeComponent;
+        }
+        int lastComponent = route - generatedRoute;
+        AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(n - 2), verticesNames.get(0));  // dodanie
+        edge.setWeight(lastComponent);
+
+        generator = new PoissonGenerator(routeComponent, random);
+
+        double weight = 0;
+        for (int i = 0; i < verticesNames.size(); i++) {
+            for (int j = i + 1; j < verticesNames.size(); j++) {
+                edge = graph.addEdge(verticesNames.get(i), verticesNames.get(j));
+                if (edge != null) {
+                    weight = (double) (lastComponent + (Integer) generator.nextValue() % (2 * routeComponent - lastComponent + 1));  //
+                    edge.setWeight(weight);
+                }
+
+            }
+        }
+    }
 
     /**
      * Metoda pomocnicza generujaca krawedzie wraz z ich wagami
