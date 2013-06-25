@@ -74,6 +74,23 @@ public class Generator {
         return graph;
     }
 
+//    private void generateEdgesForMinimalRoute(int route, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
+//        // Minimalna trasa to trasa v1, v2, v3 .... . Suma tych krawędzi równa jest route
+//        int currentRoute = route;
+//        NumberGenerator<? extends Number> generator;
+//        Random random = new Random();
+//
+//        generator = new PoissonGenerator(route/verticesNames.size(), random);
+//
+//        int part = 0;
+//        while(part > verticesNames.size()) {
+//
+//            generated = Math.round((Double) generator.nextValue() * (maxWeight - minWeight + 1));
+//        }
+//        int routeComponent = (double) verticesNames.size() / route;
+//        // tworzymy krawędzie pomiędzy minimalną trasą
+//    }
+
     /**
      * Metoda pomocnicza generujaca krawedzie wraz z ich wagami
      *
@@ -89,7 +106,7 @@ public class Generator {
 
     private void generateEdges(int minWeight, int maxWeight, int distribution, double mean, double standardDeviation, double rate, double probability, SimpleWeightedGraph<String, AdvancedWeightedEdge> graph) {
         NumberGenerator<? extends Number> generator;
-        Random random = new MersenneTwisterRNG();
+        Random random = new Random();
 
         switch (distribution) {
             case GAUSSIAN:

@@ -1,7 +1,5 @@
 package pl.wat.tal.components;
 
-import java.util.Date;
-
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -11,95 +9,150 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-
 import pl.wat.tal.brute.BruteForce;
 import pl.wat.tal.chris.ChristofidesAlgorithm;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.generator.Generator;
+import pl.wat.tal.misc.TSPResult;
+import pl.wat.tal.view.ChartWindow;
 
 public class ChartWindowComponents {
-	private XYSeries bruteSeries;
-	private XYSeries chrisSeries;
-	private XYSeriesCollection bruteCollection;
-	private XYSeriesCollection chrisCollection;
-	private XYDataset bruteSet;
-	private XYDataset chrisSet;
-	private JFreeChart bruteChart;
-	private JFreeChart chrisChart;
-	private ChartPanel brutePane;
-	private ChartPanel chrisPane;
-	private Algorithm algorithm;
-	private Generator generator;
-	
-	public ChartWindowComponents(int option){
-		init(option);
-	}
-	
-	protected void init(int option){
-		generator = new Generator();
-		bruteSeries = new XYSeries("Algorytm Brute Force");
-		chrisSeries = new XYSeries("Algorytm Christofidesa");
-		
-		algorithmLoop(0, option);  // uzyskanie wartosci dla brute force
-		algorithmLoop(1, option);  // uzyskanie wartosci dla christofidesa
-		
-		bruteCollection = new XYSeriesCollection(bruteSeries);
-		chrisCollection = new XYSeriesCollection(chrisSeries);
-		bruteSet = bruteCollection;
-		chrisSet = chrisCollection;
-		
-		bruteChart = ChartFactory.createXYLineChart("Algorytm Brute Force", "Rozmiar problemu", "Czas wykonania", bruteSet, PlotOrientation.VERTICAL, true, true, false);
-		chrisChart = ChartFactory.createXYLineChart("Algorytm Christofidesa", "Rozmiar problemu", "Czas wykonania", chrisSet, PlotOrientation.VERTICAL, true, true, false);
-		
-		brutePane = new ChartPanel(bruteChart);
-		chrisPane = new ChartPanel(chrisChart);
-	}
-	
-	protected void algorithmLoop(int algorithmOption, int option){
-		switch (algorithmOption) {
-		case 0:  // BRUTE
-			algorithm = new BruteForce();
-			break;
-			
-		case 1:  // CHRIS
-			algorithm = new ChristofidesAlgorithm();
-			break;
+    private XYSeries bruteSeries;
+    private XYSeries chrisSeries;
+    private XYSeries nCubedSeries;
+    private XYSeriesCollection bruteCollection;
+    private XYSeriesCollection chrisCollection;
+    private XYSeriesCollection nCubedCollection;
+    private XYDataset bruteSet;
+    private XYDataset nCubedSet;
+    private XYDataset chrisSet;
+    private JFreeChart bruteChart;
+    private JFreeChart chrisChart;
+    private ChartPanel brutePane;
+    private ChartPanel chrisPane;
+    private Algorithm algorithm;
+    private Generator generator;
 
-		default:
-			algorithm = new BruteForce();
-			System.out.println("ERROR!");
-			System.exit(1);
-			break;
-		}
-		
-		switch (option) {
-		case 0:
-			for (int i=3; i<11; i++){
-				SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(i, false, 10, 100, Generator.GAUSSIAN, 0, 1, 0, 0);
-				Date start = new Date();
-				algorithm.findSolution("v0", graph);
-				Date end = new Date();
-				long duration = end.getTime() - start.getTime();
-				if(algorithmOption == 0)
-					bruteSeries.add(i, duration);  // dodanie wartosci do wykresu
-				else
-					chrisSeries.add(i, duration);
-			}
-			break;
+    public ChartWindowComponents(int option) {
+        init(option);
+    }
 
-		default:
-			break;
-		}
-		
-	}
+    protected void init(int option) {
+        generator = new Generator();
+        bruteSeries = new XYSeries("Algorytm Brute Force");
+        chrisSeries = new XYSeries("Algorytm Christofidesa");
+        nCubedSeries = new XYSeries("N^2");
+//        for(int i=3; i < 200; i++) {
+//            nCubedSeries.add(i, i);
+//        }
 
-	public ChartPanel getBrutePane() {
-		return brutePane;
-	}
+        if (option == ChartWindow.COMPLEXITY_CHRIST || option == ChartWindow.MEMORY_CHRIST) {
+            algorithmLoop(new ChristofidesAlgorithm(), option, 150, chrisSeries);  // uzyskanie wartosci dla
+            // christofidesa
+        } else if (option == ChartWindow.MEMORY) {
+            algorithmLoop(new BruteForce(), option, 11, bruteSeries);  // uzyskanie wartosci dla brute force
+        } else if (option == ChartWindow.QUALITY) {
+            algorithmQualityLoop(chrisSeries);
+        } else {
+            algorithmLoop(new BruteForce(), option, 11, bruteSeries);  // uzyskanie wartosci dla brute force
+            algorithmLoop(new ChristofidesAlgorithm(), option, 11, chrisSeries);  // uzyskanie wartosci dla christofidesa
+        }
 
-	public ChartPanel getChrisPane() {
-		return chrisPane;
-	}
+        bruteCollection = new XYSeriesCollection(bruteSeries);
+        chrisCollection = new XYSeriesCollection(chrisSeries);
+        //chrisCollection.addSeries(nCubedSeries);
+        bruteSet = bruteCollection;
+        chrisSet = chrisCollection;
+
+        String yTitle = new String();
+        switch (option) {
+            case 0:
+                yTitle = "Czas wykonania [msec]";
+                break;
+
+            case 1:
+            case 4:
+            case 5:
+                yTitle = "Zajęta pamięć";
+                break;
+
+            case 2:
+            case 6:
+                yTitle = "Jakość algorytmu";
+                break;
+            case 3:
+                yTitle = "Czas wykonania [msec]";
+                break;
+
+            default:
+                System.out.println("ERROR!");
+                System.exit(1);
+                break;
+        }
+
+        bruteChart = ChartFactory.createXYLineChart("Algorytm Brute Force", "Rozmiar problemu", yTitle, bruteSet,
+                PlotOrientation.VERTICAL, true, true, false);
+        chrisChart = ChartFactory.createXYLineChart("Algorytm Christofidesa", "Rozmiar problemu", yTitle, chrisSet,
+                PlotOrientation.VERTICAL, true, true, false);
+        chrisChart.getXYPlot().getRangeAxis().setRange(0.9, 1.5);
+        brutePane = new ChartPanel(bruteChart);
+        chrisPane = new ChartPanel(chrisChart);
+    }
+
+    protected void algorithmLoop(Algorithm algorithm, int option, int problemSize, XYSeries series) {
+
+        switch (option) {
+            case 0:
+            case 3:
+                for (int i = 3; i < problemSize; i++) {
+                    SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(i, false, 10, 100,
+                            Generator.POISSON, 54, 1, 0, 0);
+                    long start = System.currentTimeMillis();
+                    algorithm.findSolution("v0", graph);
+                    long end = System.currentTimeMillis();
+
+                    long duration = end - start;
+                    series.add(i, duration);
+                }
+                break;
+
+            case 1:
+            case 4:
+            case 5:
+                for (int i = 3; i < problemSize; i++) {
+                    SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(i, false, 10, 100, Generator.POISSON, 34, 0, 0, 0);
+                    Runtime runtime = Runtime.getRuntime();
+                    algorithm.findSolution("v0", graph);
+                    long memory = runtime.totalMemory() - runtime.freeMemory();
+                    series.add(i, memory);
+                }
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    public void algorithmQualityLoop(XYSeries series) {
+        Algorithm brute = new BruteForce();
+        Algorithm christ = new ChristofidesAlgorithm();
+        for (int i = 3; i < 11; i++) {
+            SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generate(i, false, 10, 100, Generator.POISSON, 34, 0, 0, 0);
+            TSPResult bruteResult = brute.findSolution("v0", graph);
+            TSPResult christResult = christ.findSolution("v0", graph);
+            System.out.println("Christ = " + christResult.getDistance() + " Brute = " + bruteResult.getDistance());
+            double howWorse = (double) christResult.getDistance() / (double) bruteResult.getDistance();
+            series.add(i, howWorse);
+        }
+    }
+
+    public ChartPanel getBrutePane() {
+        return brutePane;
+    }
+
+    public ChartPanel getChrisPane() {
+        return chrisPane;
+    }
 
 
 }

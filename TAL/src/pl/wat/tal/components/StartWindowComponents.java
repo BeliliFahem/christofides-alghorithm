@@ -2,7 +2,6 @@ package pl.wat.tal.components;
 
 import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
-
 import pl.wat.tal.view.ChartWindow;
 import pl.wat.tal.view.GenerateWindow;
 import pl.wat.tal.view.ResultWindow;
@@ -24,6 +23,7 @@ public class StartWindowComponents implements ActionListener {
     private JButton christofidesButton;
     private JButton complexityButton;
     private JButton memoryButton;
+    private JButton qualityButton;
     private JPanel upperPane;
     private JPanel centralPane;
     private FlowLayout upperLayout;
@@ -57,16 +57,18 @@ public class StartWindowComponents implements ActionListener {
 
     protected void initCentralPanel() {
         centralPane = new JPanel();
-        centralLayout = new GridLayout(4, 1, 20, 20);
+        centralLayout = new GridLayout(5, 1, 20, 20);
         bruteButton = new JButton("Uruchom algorytm Brute Force");
         christofidesButton = new JButton("Uruchom algorytm Christofidesa");
         complexityButton = new JButton("Złożoność obliczeniowa");
         memoryButton = new JButton("Złożoność pamięciowa");
+        qualityButton = new JButton("Jakość algorytmu");
 
         bruteButton.addActionListener(this);
         christofidesButton.addActionListener(this);
         complexityButton.addActionListener(this);
         memoryButton.addActionListener(this);
+        qualityButton.addActionListener(this);
 
         bruteButton.setEnabled(false);  // nieaktywny brak grafu
         christofidesButton.setEnabled(false);  // nieaktywny brak grafu
@@ -76,6 +78,7 @@ public class StartWindowComponents implements ActionListener {
         centralPane.add(christofidesButton);
         centralPane.add(complexityButton);
         centralPane.add(memoryButton);
+        centralPane.add(qualityButton);
     }
 
     @Override
@@ -95,10 +98,15 @@ public class StartWindowComponents implements ActionListener {
                 results = new ResultWindow();
             }
             results.selectVertex(ResultWindow.CHRISTOFIDES, graph);
-        } else if (source == complexityButton){
-        	new ChartWindow(ChartWindow.COMPLEXITY);
-        } else if (source == memoryButton){
-        	// TODO
+        } else if (source == complexityButton) {
+            new ChartWindow(ChartWindow.COMPLEXITY);
+            new ChartWindow(ChartWindow.COMPLEXITY_CHRIST);
+        } else if (source == memoryButton) {
+            new ChartWindow(ChartWindow.MEMORY_CHRIST_SMALL);
+//        	new ChartWindow(ChartWindow.MEMORY_CHRIST);
+        } else if (source == qualityButton) {
+            new ChartWindow(ChartWindow.QUALITY);
+            //  new ChartWindow(ChartWindow.QUALITY_CHRIST);
         }
     }
 

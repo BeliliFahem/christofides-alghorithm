@@ -101,7 +101,7 @@ public class BruteForce extends AbstractAlgorithm implements Algorithm {
     private void permute(List<String> route, int index, List<List<String>> permutations) {
         if (index >= route.size() - 1) {  // koniec permutacji
             permutations.add(new LinkedList<String>(route));  // aby dodac nowy obiekt, a nie REFERENCJE!
-            System.out.println(route.toString());  // DEBUG
+//            System.out.println(route.toString());  // DEBUG
         } else {
             // puszczenie elemntu bez permutacji
             permute(route, index + 1, permutations);
