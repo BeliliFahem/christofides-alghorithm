@@ -2,11 +2,10 @@ package pl.wat.tal.chris;
 
 import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.EulerianCircuit;
-import org.jgrapht.alg.KruskalMinimumSpanningTree;
+import org.jgrapht.alg.util.UnionFind;
 import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.jgrapht.traverse.DepthFirstIterator;
 import pl.wat.tal.common.AbstractAlgorithm;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.misc.TSPResult;
@@ -28,10 +27,8 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
         SimpleWeightedGraph<String, AdvancedWeightedEdge> mst = findMinimumSpanningTree(graph);
         // Znalezienie zbioru Vodd wierzchołków nieparzystego stopnia w drzewie mst
         Set<String> vodd = findOddDegreeVertices(mst);
-//        // Znalezienie w zbiorze Vodd minimalnych skojarzeń dokładnych M0odd
-//        List<List<String>> M0odd = findMinimumWeightMatching(graph, vodd);
-
-        SimpleWeightedGraph<String, AdvancedWeightedEdge> minimumMatchingGraph = greedyMatch(vodd, graph);
+        // Znalezienie w zbiorze Vodd minimalnych skojarzeń dokładnych M0odd
+        SimpleWeightedGraph<String, AdvancedWeightedEdge> minimumMatchingGraph = matching(vodd, graph);
         WeightedMultigraph<String, AdvancedWeightedEdge> combinedGraph = combineGraphs(mst, minimumMatchingGraph);
         List<String> eulerianCycle = findEulerianCycle(combinedGraph);
         List<String> tspSolution = findHamiltonianCycle(eulerianCycle, graph, startVertex);
@@ -127,9 +124,8 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
      * @return Minimalne drzewo spinające
      */
     private SimpleWeightedGraph<String, AdvancedWeightedEdge> findMinimumSpanningTree(WeightedGraph<String, AdvancedWeightedEdge> graph) {
-        KruskalMinimumSpanningTree<String, AdvancedWeightedEdge> kruskal = new KruskalMinimumSpanningTree<String, AdvancedWeightedEdge>(graph);
 
-        Set<AdvancedWeightedEdge> mstEdges = kruskal.getEdgeSet();
+        Set<AdvancedWeightedEdge> mstEdges = kruskalMST(graph);
 
         SimpleWeightedGraph<String, AdvancedWeightedEdge> mst = new SimpleWeightedGraph<String,
                 AdvancedWeightedEdge>(AdvancedWeightedEdge.class);
@@ -145,6 +141,39 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
         }
 
         return mst;
+    }
+
+    /**
+     * @param graph
+     * @return
+     */
+    private Set<AdvancedWeightedEdge> kruskalMST(final WeightedGraph<String, AdvancedWeightedEdge> graph) {
+        UnionFind<String> forest = new UnionFind<String>(graph.vertexSet());
+        ArrayList<AdvancedWeightedEdge> allEdges = new ArrayList<AdvancedWeightedEdge>(graph.edgeSet());
+
+        // Sortowanie
+        Collections.sort(
+                allEdges,
+                new Comparator<AdvancedWeightedEdge>() {
+                    public int compare(AdvancedWeightedEdge edge1, AdvancedWeightedEdge edge2) {
+                        return Double.valueOf(graph.getEdgeWeight(edge1)).compareTo(
+                                graph.getEdgeWeight(edge2));
+                    }
+                });
+        Set<AdvancedWeightedEdge> edgeList = new HashSet<AdvancedWeightedEdge>();
+
+        for (AdvancedWeightedEdge edge : allEdges) {
+            String source = graph.getEdgeSource(edge);
+            String target = graph.getEdgeTarget(edge);
+            if (forest.find(source).equals(forest.find(target))) {
+                continue;
+            }
+
+            forest.union(source, target);
+            edgeList.add(edge);
+        }
+
+        return edgeList;
     }
 
     /**
@@ -165,32 +194,6 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
     }
 
     /**
-     * @param graph
-     * @param vodd
-     * @return
-     */
-    private List<List<String>> findMinimumWeightMatching(
-            SimpleWeightedGraph<String, AdvancedWeightedEdge> graph,
-            Set<String> vodd
-    ) {
-
-        List<List<String>> list = new LinkedList<List<String>>();
-
-        // Dla każdego wierzchołka w zbiorze
-        for (String startVertex : vodd) {
-            DepthFirstIterator<String, AdvancedWeightedEdge> i = new DepthFirstIterator<String, AdvancedWeightedEdge>(graph,
-                    startVertex);
-            while (i.hasNext()) {
-                String current = i.next();
-                int ojej = 0;
-                ojej++;
-            }
-        }
-
-        return list;
-    }
-
-    /**
      * Znajdowanie cyklu eulera
      *
      * @param graph
@@ -203,9 +206,9 @@ public class ChristofidesAlgorithm extends AbstractAlgorithm implements Algorith
         return list;
     }
 
-    private SimpleWeightedGraph<String, AdvancedWeightedEdge> greedyMatch(Set<String> voddVertices,
-                                                                          SimpleWeightedGraph<String,
-                                                                                  AdvancedWeightedEdge> graph) {
+    private SimpleWeightedGraph<String, AdvancedWeightedEdge> matching(Set<String> voddVertices,
+                                                                       SimpleWeightedGraph<String,
+                                                                               AdvancedWeightedEdge> graph) {
         LinkedList<AdvancedWeightedEdge> matches = new LinkedList<AdvancedWeightedEdge>();
 
         Set<String> vertices = new HashSet<String>();

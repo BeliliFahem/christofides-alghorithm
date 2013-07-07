@@ -9,12 +9,16 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jgrapht.graph.AdvancedWeightedEdge;
 import org.jgrapht.graph.SimpleWeightedGraph;
+import org.uncommons.maths.number.NumberGenerator;
+import org.uncommons.maths.random.BinomialGenerator;
 import pl.wat.tal.brute.BruteForce;
 import pl.wat.tal.chris.ChristofidesAlgorithm;
 import pl.wat.tal.common.Algorithm;
 import pl.wat.tal.generator.Generator;
 import pl.wat.tal.misc.TSPResult;
 import pl.wat.tal.view.ChartWindow;
+
+import java.util.Random;
 
 public class ChartWindowComponents {
     private XYSeries bruteSeries;
@@ -53,6 +57,8 @@ public class ChartWindowComponents {
             algorithmLoop(new BruteForce(), option, 11, bruteSeries);  // uzyskanie wartosci dla brute force
         } else if (option == ChartWindow.QUALITY) {
             algorithmQualityLoop(chrisSeries);
+        } else if (option == ChartWindow.QUALITY_CHRIST) {
+            algorithmChristQualityLoop(chrisSeries);
         } else {
             algorithmLoop(new BruteForce(), option, 11, bruteSeries);  // uzyskanie wartosci dla brute force
             algorithmLoop(new ChristofidesAlgorithm(), option, 11, chrisSeries);  // uzyskanie wartosci dla christofidesa
@@ -94,11 +100,28 @@ public class ChartWindowComponents {
                 PlotOrientation.VERTICAL, true, true, false);
         chrisChart = ChartFactory.createXYLineChart("Algorytm Christofidesa", "Rozmiar problemu", yTitle, chrisSet,
                 PlotOrientation.VERTICAL, true, true, false);
-        if (option == ChartWindow.QUALITY) {
+        if (option == ChartWindow.QUALITY || option == ChartWindow.QUALITY_CHRIST) {
             chrisChart.getXYPlot().getRangeAxis().setRange(0.9, 1.5);
         }
         brutePane = new ChartPanel(bruteChart);
         chrisPane = new ChartPanel(chrisChart);
+    }
+
+    protected void algorithmChristQualityLoop(XYSeries series) {
+        Algorithm christ = new ChristofidesAlgorithm();
+        NumberGenerator<? extends Number> generatorm;
+
+        Random random = new Random();
+        generatorm = new BinomialGenerator(10000, 0.5, random);
+
+        int length = 0;
+        for (int i = 3; i < 70; i++) {
+            length = (1000 + (Integer) generatorm.nextValue() % (10000 - 1000 + 1));  // generowanie wagi
+            SimpleWeightedGraph<String, AdvancedWeightedEdge> graph = generator.generateForKnownLength(i, length);
+            TSPResult christResult = christ.findSolution("v0", graph);
+            double howWorse = (double) christResult.getDistance() / (double) length;
+            series.add(i, howWorse);
+        }
     }
 
     protected void algorithmLoop(Algorithm algorithm, int option, int problemSize, XYSeries series) {

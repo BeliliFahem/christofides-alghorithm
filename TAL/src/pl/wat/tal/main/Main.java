@@ -2,8 +2,6 @@ package pl.wat.tal.main;
 
 import pl.wat.tal.view.StartWindow;
 
-import javax.swing.*;
-
 public class Main {
 
     /**
@@ -39,19 +37,19 @@ public class Main {
 //
 //        Generator gen = new Generator();
 //        gen.generate(10, false, 70, 100, Generator.UNIFORM, 10, 10, 10, 0.1);
-        try {
-            // Set cross-platform Java L&F (also called "Metal")
-            UIManager.setLookAndFeel(
-                    UIManager.getSystemLookAndFeelClassName());
-        } catch (UnsupportedLookAndFeelException e) {
-            // handle exception
-        } catch (ClassNotFoundException e) {
-            // handle exception
-        } catch (InstantiationException e) {
-            // handle exception
-        } catch (IllegalAccessException e) {
-            // handle exception
-        }
+//        try {
+//            // Set cross-platform Java L&F (also called "Metal")
+//            UIManager.setLookAndFeel(
+//                    UIManager.getSystemLookAndFeelClassName());
+//        } catch (UnsupportedLookAndFeelException e) {
+//            // handle exception
+//        } catch (ClassNotFoundException e) {
+//            // handle exception
+//        } catch (InstantiationException e) {
+//            // handle exception
+//        } catch (IllegalAccessException e) {
+//            // handle exception
+//        }
         new StartWindow();
 
     }

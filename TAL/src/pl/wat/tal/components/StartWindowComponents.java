@@ -106,7 +106,7 @@ public class StartWindowComponents implements ActionListener {
 //        	new ChartWindow(ChartWindow.MEMORY_CHRIST);
         } else if (source == qualityButton) {
             new ChartWindow(ChartWindow.QUALITY);
-            //  new ChartWindow(ChartWindow.QUALITY_CHRIST);
+//            new ChartWindow(ChartWindow.QUALITY_CHRIST);
         }
     }
 

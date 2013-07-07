@@ -76,17 +76,23 @@ public class ResultWindowComponents implements ActionListener {
 
         if (algorithm == 0) {
             resultsConsole.setText(resultsConsole.getText() + "Użyto algorytmu brute force \n");
+
             this.algorithm = new BruteForce();
         } else if (algorithm == 1) {
+
             resultsConsole.setText(resultsConsole.getText() + "Użyto algorytmu Christofidesa \n");
             this.algorithm = new ChristofidesAlgorithm();
         }
+        long start = System.currentTimeMillis();
 
         TSPResult result = this.algorithm.findSolution(startVertex, graph);
+        long end = System.currentTimeMillis();
+        long time = end - start;
         results.add(result);  // dodanie do listy poprzednich wynikow
         resultsConsole.setText(resultsConsole.getText() + "Wybrany wierzchołek początkowy: " + startVertex + "\n");
         resultsConsole.setText(resultsConsole.getText() + "Wyznaczona droga: " + result.getRoute().toString() + "\n");
         resultsConsole.setText(resultsConsole.getText() + "Obliczona długość: " + result.getDistance() + "\n");
+        resultsConsole.setText(resultsConsole.getText() + "Czas wykonania: " + time + "msec \n");
         resultsConsole.setText(resultsConsole.getText() + "====================" + "\n");
     }
 

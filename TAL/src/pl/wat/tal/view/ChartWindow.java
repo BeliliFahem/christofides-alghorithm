@@ -27,7 +27,7 @@ public class ChartWindow extends JFrame {
         Container c = this.getContentPane();
         c.setLayout(layout);
         if (option != COMPLEXITY_CHRIST && option != MEMORY_CHRIST && option != MEMORY && option !=
-                MEMORY_CHRIST_SMALL && option != QUALITY) {
+                MEMORY_CHRIST_SMALL && option != QUALITY && option != QUALITY_CHRIST) {
             c.add(cwc.getBrutePane());
             c.add(cwc.getChrisPane());
         } else if (option == MEMORY) {

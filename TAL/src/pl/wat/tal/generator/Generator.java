@@ -88,31 +88,43 @@ public class Generator {
         NumberGenerator<? extends Number> generator;
         Random random = new Random();
         int n = verticesNames.size();
+        System.out.println("Route : " + route + " n " + n);
         int routeComponent = route / n;
 
         int generatedRoute = 0;
-        for (int i = 0; i < n - 1; i++) {
+        int i = 0;
+        double weight = 0;
+
+        for (i = 0; i < n - 1; i++) {
             AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(i + 1));  // dodanie
             edge.setWeight(routeComponent);
             generatedRoute += routeComponent;
         }
+
         int lastComponent = route - generatedRoute;
-        AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(n - 2), verticesNames.get(0));  // dodanie
+        AdvancedWeightedEdge edge = graph.addEdge(verticesNames.get(i), verticesNames.get(0));  // dodanie
         edge.setWeight(lastComponent);
+        System.out.println("Droga : " + route + " komponent " + routeComponent + " last " + lastComponent);
+        generator = new BinomialGenerator(routeComponent, 0.9, random);
+        int k = 0;
 
-        generator = new PoissonGenerator(routeComponent, random);
-
-        double weight = 0;
-        for (int i = 0; i < verticesNames.size(); i++) {
-            for (int j = i + 1; j < verticesNames.size(); j++) {
-                edge = graph.addEdge(verticesNames.get(i), verticesNames.get(j));
-                if (edge != null) {
-                    weight = (double) (lastComponent + (Integer) generator.nextValue() % (2 * routeComponent - lastComponent + 1));  //
-                    edge.setWeight(weight);
+        weight = 0;
+        for (int m = 0; m < verticesNames.size(); m++) {
+            for (int j = 0; j < verticesNames.size(); j++) {
+                if (m != j) {
+                    k++;
+                    edge = graph.addEdge(verticesNames.get(m), verticesNames.get(j));
+                    if (edge != null) {
+                        weight = (double) routeComponent * 0.5 + (int) (Math.random() * ((routeComponent * 10 -
+                                routeComponent * 0.5) + 1));
+                        System.out.println(weight);
+                        edge.setWeight(weight);
+                    }
                 }
-
             }
         }
+
+        double test = 0.0;
     }
 
     /**
@@ -189,6 +201,8 @@ public class Generator {
                 graph.setEdgeWeight(edge, weight);
             }
         }
+
+        int k = 3;
     }
 
 }
